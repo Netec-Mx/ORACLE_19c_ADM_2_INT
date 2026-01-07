@@ -1,3 +1,4 @@
+
   
 # Capítulo 7. Ajuste de Sentencias SQL
  
