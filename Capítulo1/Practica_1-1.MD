@@ -64,10 +64,10 @@
 2. Conexión y estado del CDB:
 
    ```sql
-   CONNECT / AS SYSDBA
+   SQLPLUS / AS SYSDBA
    SELECT name, cdb, open_mode FROM v$database;
    ```
-
+sel
    *Esperado:* `CDB=YES`, `OPEN_MODE=READ WRITE`.
 
 3. Confirmar ≥2 PDBs de usuario:
