@@ -1,7 +1,6 @@
 # Práctica 2.1 Servicios en CDBs y PDBs
 
 
-
 <br/><br/>
 
 ## Objetivos
@@ -66,8 +65,9 @@ SET LINES 180
 COL name FORMAT A30
 SELECT name, cdb, open_mode, database_role FROM v$database;
 SELECT con_id, name, open_mode FROM v$pdbs ORDER BY con_id;
--- Si alguna PDB no está en READ WRITE:
+-- Si alguna PDB no está en READ WRITE ejecutar la sentencia:
 -- ALTER PLUGGABLE DATABASE ALL OPEN;
+QUIT
 ```
 
 <br/><br/>
@@ -77,7 +77,7 @@ SELECT con_id, name, open_mode FROM v$pdbs ORDER BY con_id;
 ```bash
 lsnrctl services LISTENER
 
-# Listar solo los nombres publicados
+# Listar solo los nombres publicados de los servicios
 lsnrctl services LISTENER | grep 'Service "' | awk '{print $2}' | tr -d '"'
 ```
 
