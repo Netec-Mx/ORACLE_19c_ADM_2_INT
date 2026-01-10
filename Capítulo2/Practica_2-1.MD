@@ -87,6 +87,7 @@ lsnrctl services LISTENER | grep 'Service "' | awk '{print $2}' | tr -d '"'
 
 ```sql
 -- Registrados
+SQLPLUS / AS SYSDBA
 SET LINES 180
 COL name         FORMAT A30 
 COL network_name FORMAT A40
