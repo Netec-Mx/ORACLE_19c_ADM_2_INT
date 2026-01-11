@@ -241,6 +241,7 @@ sqlplus sales_user/oracle_4U@localhost:1521/pdb1
 SELECT s.username, s.service_name, s.machine, s.program, s.status
 FROM v$session s
 WHERE s.username IN ('SALES_USER') ORDER BY s.service_name;
+exit
 ```
 
 ```bash
