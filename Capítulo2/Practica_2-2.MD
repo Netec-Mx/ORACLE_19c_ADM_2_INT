@@ -184,7 +184,9 @@ echo "SELECT 'OK' FROM dual;" \
 ### Tarea 4. Servicio **común** desde `CDB$ROOT`
 
 ```sql
-ALTER SESSION SET CONTAINER=CDB$ROOT; SHOW CON_NAME;
+-- Conectate al contenedor root y crea un nuevo servicio a nivel comun
+sqlplus / as sysdba
+SHOW CON_NAME;
 
 BEGIN
   DBMS_SERVICE.CREATE_SERVICE(
