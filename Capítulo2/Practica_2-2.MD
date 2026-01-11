@@ -283,7 +283,7 @@ ALTER PLUGGABLE DATABASE pdb1 CLOSE IMMEDIATE;
 ALTER PLUGGABLE DATABASE pdb1 OPEN;
 
 ALTER SESSION SET CONTAINER=pdb1;
-SELECT name,enabled FROM v$services WHERE name IN ('SALES_APP','REPORTS_APP');
+SELECT name FROM v$services WHERE name IN ('sales_app','reports_app');
 ```
 
 <br/><br/>
@@ -294,7 +294,7 @@ SELECT name,enabled FROM v$services WHERE name IN ('SALES_APP','REPORTS_APP');
 * Servicio **COMMON_MONITORING** iniciado desde **ROOT** y resolviendo por TNS.
 * `tnsping` y conexiones **TNS/EZCONNECT** exitosas.
 * Listener registra los servicios en `lsnrctl services` y en `listener.log`.
-* Trigger de arranque automático **habilitado** y funcional tras reabrir PDB1.
+* Trigger de arranque automático de serivios **habilitado** y funcional tras reabrir PDB1.
 
 <br/><br/>
 
