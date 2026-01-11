@@ -266,11 +266,11 @@ BEGIN
 DBMS_SERVICE.START_SERVICE('reports_app'); 
 END; 
 /
-SELECT name,enabled FROM v$services WHERE name='REPORTS_APP';
+SELECT name FROM v$services WHERE name='reports_app';
 
 -- Trigger de arranque automático en PDB1
 CREATE OR REPLACE TRIGGER start_pdb_services
-  AFTER STARTUP ON pdb1.DATABASE
+  AFTER STARTUP ON DATABASE
 BEGIN
   DBMS_SERVICE.START_SERVICE('sales_app');
   DBMS_SERVICE.START_SERVICE('reports_app');
