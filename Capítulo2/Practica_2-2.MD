@@ -204,7 +204,7 @@ END;
 
 -- Ver en CDB
 SELECT con_id,name,network_name,pdb FROM cdb_services
-WHERE name='COMMON_MONITORING';
+WHERE name='common_monitoring';
 ```
 
 **tnsnames.ora (agregar)**
