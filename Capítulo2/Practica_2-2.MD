@@ -130,6 +130,11 @@ lsnrctl services LISTENER | grep -E "sales_app|reports_app" -A 4
 **tnsnames.ora**
 
 ```
+-- Agrega los siguiente servicios al archivo tnsnames.ora usando vi o gedit editor.
+
+cd $ORACLE_HOME/network/admin
+vi tnsnames.ora
+
 SALES_APP =
   (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))
     (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=sales_app.example.com)))
@@ -146,6 +151,10 @@ SALES_APP_FO =
 ```
 
 ```bash
+-- Recarga los servicios de la base de datos
+lsnrctl reload
+
+-- Espera un minuto mientras se publican los servicios y verifica la conectividad a los servicios
 tnsping SALES_APP ; tnsping REPORTS_APP ; tnsping SALES_APP_FO
 ```
 
