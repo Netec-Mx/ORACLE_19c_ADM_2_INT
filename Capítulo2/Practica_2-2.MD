@@ -45,19 +45,18 @@
 
 ## Instrucciones
 
-### Tarea 1. Preparación.- Debes estar conectado en la cuenta oracle.
+### Tarea 1. Preparación.- Desde la cuenta oracle verifica las variables de medio ambiente.
 
 ```bash
-sudo su - oracle
-export ORACLE_HOME=/u01/app/oracle/product/19c/dbhome_1
-export ORACLE_SID=ORCL
-export PATH=$ORACLE_HOME/bin:$PATH
+env|grep ORA
 sqlplus -v
 lsnrctl status LISTENER
+-- Si el listener no esta activo ejecutar el comando
+lsnrctl start LISTENER
 ```
 
 ```sql
--- Ver CDB y PDBs
+-- Verificar las CDB y PDBs
 sqlplus / as sysdba
 SELECT name,open_mode,cdb FROM v$database;
 SELECT con_id,name,open_mode FROM v$pdbs ORDER BY con_id;
