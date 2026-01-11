@@ -114,10 +114,11 @@ END;
 -- Ver servicios en PDB1
 SELECT name,network_name,clb_goal FROM v$services
 WHERE pdb='PDB1' AND name IN ('sales_app','reports_app');
+exit
 ```
 
 ```bash
-# Listener registra dinámicamente (espera breve)
+# El listener registra los servicios dinámicamente (espera breve)
 sleep 10
 lsnrctl services LISTENER | grep -E "sales_app|reports_app" -A 4
 ```
