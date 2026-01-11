@@ -161,7 +161,8 @@ tnsping SALES_APP_FO
 ```
 
 ```sql
--- Usuario de prueba en PDB1 (si no existe)
+-- Crea un usuario de prueba en PDB1 (si no existe)
+sqlplus / as sysdba
 ALTER SESSION SET CONTAINER=pdb1;
 CREATE USER sales_user IDENTIFIED BY "oracle_4U";
 GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO sales_user;
