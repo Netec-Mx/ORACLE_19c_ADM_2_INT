@@ -226,9 +226,11 @@ tnsping common_monitoring
 
 ```sql
 -- Consolidado
+sqlplus / as sysdba
+
 SELECT con_id,name,network_name,pdb,creation_date
 FROM cdb_services
-WHERE name IN ('SALES_APP','REPORTS_APP','COMMON_MONITORING')
+WHERE name IN ('sales_app','reports_app','common_monitoring')
 ORDER BY con_id,name;
 
 -- Sesiones por servicio
