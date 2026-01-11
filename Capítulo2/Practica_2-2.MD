@@ -234,6 +234,10 @@ WHERE name IN ('sales_app','reports_app','common_monitoring')
 ORDER BY con_id,name;
 
 -- Sesiones por servicio
+-- Conectate en una segunda terminal al usuario SALES_USER 
+sqlplus sale_user/oracle_4U@pdb1
+
+-- Regresa a la terminal original y da la siguiente sentencia
 SELECT s.username, s.service_name, s.machine, s.program, s.status
 FROM v$session s
 WHERE s.username IN ('SALES_USER') ORDER BY s.service_name;
