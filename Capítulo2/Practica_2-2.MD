@@ -155,7 +155,9 @@ SALES_APP_FO =
 lsnrctl reload
 
 -- Espera un minuto mientras se publican los servicios y verifica la conectividad a los servicios
-tnsping SALES_APP ; tnsping REPORTS_APP ; tnsping SALES_APP_FO
+tnsping SALES_APP  
+tnsping REPORTS_APP  
+tnsping SALES_APP_FO
 ```
 
 ```sql
