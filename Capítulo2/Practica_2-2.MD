@@ -207,7 +207,7 @@ SELECT con_id,name,network_name,pdb FROM cdb_services
 WHERE name='common_monitoring';
 ```
 
-**tnsnames.ora (agregar)**
+**tnsnames.ora (agregar el servicio)**
 
 ```
 COMMON_MONITORING =
@@ -216,7 +216,8 @@ COMMON_MONITORING =
 ```
 
 ```bash
-tnsping COMMON_MONITORING
+-- Pruebe la conectividad al servicio comun
+tnsping common_monitoring
 ```
 
 <br/>
