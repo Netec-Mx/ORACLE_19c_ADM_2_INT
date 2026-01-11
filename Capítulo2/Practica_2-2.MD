@@ -312,12 +312,13 @@ tnsping COMMON_MONITORING
 
 ```sql
 -- 3) Estado de servicios
+sqlplus / as sysdba
 SELECT name,network_name,pdb FROM v$services
-WHERE name IN ('SALES_APP','REPORTS_APP') ORDER BY 1;
+WHERE name IN ('sales_app','reports_app') ORDER BY 1;
 
 -- 4) Servicio común visible en CDB
 SELECT con_id,name,network_name,pdb FROM cdb_services
-WHERE name='COMMON_MONITORING';
+WHERE name='common_monitoring';
 
 -- 5) Sesiones de prueba (si conectaste)
 SELECT username,service_name FROM v$session
