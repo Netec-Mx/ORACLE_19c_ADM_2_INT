@@ -169,7 +169,7 @@ GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO sales_user;
 ```
 
 ```bash
-# Con TNS
+# Usando la conectividad definida en tnsnames.ora ejecuta el siguiente comando
 echo "SELECT sys_context('USERENV','SERVICE_NAME') sn, sys_context('USERENV','CON_NAME') cn FROM dual;" \
 | sqlplus -S sales_user/oracle_4U@SALES_APP
 
