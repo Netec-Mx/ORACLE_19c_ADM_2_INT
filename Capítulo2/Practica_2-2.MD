@@ -45,7 +45,7 @@
 
 ## Instrucciones
 
-### Tarea 1. Preparación
+### Tarea 1. Preparación.- Debes estar conectado en la cuenta oracle.
 
 ```bash
 sudo su - oracle
