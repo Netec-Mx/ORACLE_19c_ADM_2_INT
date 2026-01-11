@@ -166,6 +166,7 @@ sqlplus / as sysdba
 ALTER SESSION SET CONTAINER=pdb1;
 CREATE USER sales_user IDENTIFIED BY "oracle_4U";
 GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO sales_user;
+exit
 ```
 
 ```bash
