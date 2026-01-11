@@ -112,7 +112,7 @@ END;
 /
 
 -- Ver servicios en PDB1
-SELECT name,network_name,clb_goal,enabled FROM v$services
+SELECT name,network_name,clb_goal FROM v$services
 WHERE pdb='PDB1' AND name IN ('sales_app','reports_app');
 ```
 
