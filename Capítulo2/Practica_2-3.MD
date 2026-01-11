@@ -145,7 +145,7 @@ ALTER PLUGGABLE DATABASE pdb_test SAVE STATE;
 PDB_TEST  READ ONLY  NO
 ```
 
-**3. Configurar PDB_DEV en modo RESTRICTED**
+**3. Configurar PDB_DEV en modo RESTRICTED** Modo administrativo con recursos sin usuarios.
 
 ```sql
 ALTER PLUGGABLE DATABASE pdb_dev CLOSE IMMEDIATE;
@@ -191,10 +191,10 @@ SELECT name, open_mode, restricted FROM v$pdbs;
 **Verificación adicional:**
 
 ```bash
-tail -n200 $ORACLE_BASE/diag/rdbms/*/*/trace/alert_*.log | grep -i "PDB"
+!tail -n200 $ORACLE_BASE/diag/rdbms/*/*/trace/alert_*.log | grep -i "PDB"
 ```
 
-**3. Escenario: STARTUP FORCE**
+**3. Escenario: STARTUP FORCE** (Equivale a shutdown abort seguido por startup)
 
 ```sql
 help startup
