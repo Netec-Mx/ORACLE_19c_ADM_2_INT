@@ -258,8 +258,14 @@ grep -i "service_register\|sales_app\|reports_app\|common_monitoring" listener.l
 -- Detener / Iniciar
 sqlplus / as sysdba
 ALTER SESSION SET CONTAINER=pdb1;
-BEGIN DBMS_SERVICE.STOP_SERVICE('reports_app'); END; /
-BEGIN DBMS_SERVICE.START_SERVICE('reports_app'); END; /
+BEGIN 
+DBMS_SERVICE.STOP_SERVICE('reports_app'); 
+END; 
+/
+BEGIN 
+DBMS_SERVICE.START_SERVICE('reports_app'); 
+END; 
+/
 SELECT name,enabled FROM v$services WHERE name='REPORTS_APP';
 
 -- Trigger de arranque automático en PDB1
