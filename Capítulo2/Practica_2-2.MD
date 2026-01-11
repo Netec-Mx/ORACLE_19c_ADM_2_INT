@@ -246,7 +246,7 @@ exit
 
 ```bash
 # Logs del listener
-cd $ORACLE_BASE/diag/tnslsnr/$(hostname)/listener/trace
+cd $ORACLE_BASE/diag/tnslsnr/localhost/listener/trace
 grep -i "service_register\|sales_app\|reports_app\|common_monitoring" listener.log | tail -20
 ```
 
@@ -256,6 +256,7 @@ grep -i "service_register\|sales_app\|reports_app\|common_monitoring" listener.l
 
 ```sql
 -- Detener / Iniciar
+sqlplus / as sysdba
 ALTER SESSION SET CONTAINER=pdb1;
 BEGIN DBMS_SERVICE.STOP_SERVICE('reports_app'); END; /
 BEGIN DBMS_SERVICE.START_SERVICE('reports_app'); END; /
