@@ -312,7 +312,7 @@ tnsping COMMON_MONITORING
 
 ```sql
 -- 3) Estado de servicios
-SELECT name,network_name,pdb,enabled FROM v$services
+SELECT name,network_name,pdb FROM v$services
 WHERE name IN ('SALES_APP','REPORTS_APP') ORDER BY 1;
 
 -- 4) Servicio común visible en CDB
