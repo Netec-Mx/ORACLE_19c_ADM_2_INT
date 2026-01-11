@@ -235,7 +235,7 @@ ORDER BY con_id,name;
 
 -- Sesiones por servicio
 -- Conectate en una segunda terminal al usuario SALES_USER 
-sqlplus sale_user/oracle_4U@pdb1
+sqlplus sales_user/oracle_4U@localhost:1521/pdb1
 
 -- Regresa a la terminal original y da la siguiente sentencia
 SELECT s.username, s.service_name, s.machine, s.program, s.status
