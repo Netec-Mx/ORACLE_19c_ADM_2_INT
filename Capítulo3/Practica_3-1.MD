@@ -50,12 +50,14 @@
 
 ### Tarea 1. Validar estado del CDB y entorno de trabajo
 
-#### **Paso 1.** Establecer variables de entorno en la sesión actual:
+#### **Paso 1.** Verificar y establecer variables de entorno en la cuenta oracle:
 
 ```bash
-export ORACLE_SID=ORCL
-export ORACLE_HOME=/u01/app/oracle/product/19c/dbhome_1
-export PATH=$ORACLE_HOME/bin:$PATH
+env|grep ORA
+sqlplus -v
+lsnrctl status LISTENER
+-- Si el listener no esta activo ejecutar el comando
+lsnrctl start LISTENER
 ```
 
 #### **Paso 2.** Verificar que el CDB se encuentra activo:
