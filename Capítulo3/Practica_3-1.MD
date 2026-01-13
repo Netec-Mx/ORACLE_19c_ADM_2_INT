@@ -89,6 +89,7 @@ rman target /
 
 ```rman
 RMAN> SHOW ALL;
+exit
 ```
 
 #### **Paso 3.** Documentar diferencias CDB vs. non-CDB:
