@@ -149,9 +149,14 @@ SHOW PARAMETER db_recovery_file_dest;
 EXIT;
 ```
 
-#### **Paso 2.** Crear directorio con permisos adecuados:
+#### **Paso 2.** Crear directorio con permisos adecuados (solo si no existe):
 
 ```bash
+# Verificar si existe el directorio de FRA
+ls -ld /u01/app/oracle/fast_recovery_area
+
+# Si no existe crearlo con los siguientes comandos:
+
 mkdir -p /u01/app/oracle/fast_recovery_area
 chown oracle:oinstall /u01/app/oracle/fast_recovery_area
 chmod 755 /u01/app/oracle/fast_recovery_area
