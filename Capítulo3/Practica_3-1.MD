@@ -179,6 +179,8 @@ EXIT;
 #### **Paso 1.** Configurar política de retención:
 
 ```rman
+rman target /
+SHOW ALL
 CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
 CONFIGURE CONTROLFILE AUTOBACKUP ON;
 CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/u01/app/oracle/fast_recovery_area/%F';
@@ -199,6 +201,7 @@ SHOW ALL;
 ```rman
 CONFIGURE ARCHIVELOG DELETION POLICY TO BACKED UP 1 TIMES TO DISK;
 SHOW ARCHIVELOG DELETION POLICY;
+exit
 ```
 
 <br/><br/>
@@ -208,23 +211,25 @@ SHOW ARCHIVELOG DELETION POLICY;
 #### **Paso 1.** Consultar configuración RMAN vía SQL:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT name, value FROM v$rman_configuration ORDER BY conf#;
 EXIT;
-EOF
 ```
 
 #### **Paso 2.** Realizar backup de controlfile de prueba:
 
 ```rman
+rman target /
+
 BACKUP CURRENT CONTROLFILE FORMAT '/u01/app/oracle/fast_recovery_area/controlfile_test_%U.bkp';
 LIST BACKUP SUMMARY;
+exit
 ```
 
 #### **Paso 3.** Revisar metadatos del backup:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT session_key, input_type, status,
        TO_CHAR(start_time, 'YYYY-MM-DD HH24:MI:SS') AS start_time,
        TO_CHAR(end_time, 'YYYY-MM-DD HH24:MI:SS') AS end_time,
@@ -233,7 +238,6 @@ FROM v$rman_backup_job_details
 WHERE start_time > SYSDATE - 1
 ORDER BY start_time DESC;
 EXIT;
-EOF
 ```
 
 <br/><br/>
@@ -247,12 +251,15 @@ Al finalizar la práctica, deberás obtener salidas similares a las siguientes e
 Comprobación desde SQL*Plus:
 
 ```sql
+sqlplus / as sysdba
+
 SQL> SHOW PARAMETER db_recovery_file_dest;
 
 NAME                                 TYPE        VALUE
 ------------------------------------ ----------- ----------------------------------------
 db_recovery_file_dest                string      /u01/app/oracle/fast_recovery_area
 db_recovery_file_dest_size           big integer 20G
+exit
 ```
 
 Visualización del directorio en Linux:
@@ -269,11 +276,14 @@ drwxr-xr-x. 3 oracle oinstall 4096 Nov 09 11:45 /u01/app/oracle/fast_recovery_ar
 Validación desde SQL*Plus:
 
 ```sql
+sqlplus / as sysdba
+
 SQL> SELECT name, log_mode FROM v$database;
 
 NAME      LOG_MODE
 --------- ----------------
 ORCL      ARCHIVELOG
+exit
 ```
 
 <br/><br/>
@@ -283,8 +293,9 @@ ORCL      ARCHIVELOG
 Desde el prompt de RMAN:
 
 ```rman
-RMAN> SHOW ALL;
+rman target /
 
+RMAN> SHOW ALL;
 CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
 CONFIGURE CONTROLFILE AUTOBACKUP ON;
 CONFIGURE COMPRESSION ALGORITHM 'MEDIUM';
@@ -321,6 +332,8 @@ List of Backups
 Key     TY LV S Device Type Completion Time
 ------- -- -- - ----------- -------------------
 1       B  F  A DISK        09-NOV-25
+
+exit
 ```
 
 Comprobación del archivo generado:
