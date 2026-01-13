@@ -142,7 +142,13 @@ EXIT;
 #### **Paso 1.** Establecer ubicación y tamaño:
 
 ```sql
+-- Verifica el destino y tamaño del FRA, actualiza los parámetros a los valores indicados.
+
 sqlplus / as sysdba
+show parameter db_recovery_file_dest;
+
+-- Si es necesario, haz que los parámetros coincidan con los siguientes valores.
+
 ALTER SYSTEM SET db_recovery_file_dest='/u01/app/oracle/fast_recovery_area' SCOPE=BOTH;
 ALTER SYSTEM SET db_recovery_file_dest_size=20G SCOPE=BOTH;
 SHOW PARAMETER db_recovery_file_dest;
