@@ -63,11 +63,10 @@ lsnrctl start LISTENER
 #### **Paso 2.** Verificar que el CDB se encuentra activo:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT instance_name, status, database_role FROM v$instance;
 SELECT name, open_mode, cdb FROM v$database;
 EXIT;
-EOF
 ```
 
 #### **Paso 3.** Confirmar espacio disponible en disco para la FRA:
