@@ -109,33 +109,30 @@ EXIT;
 #### **Paso 1.** Verificar estado actual:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT name, log_mode, force_logging, flashback_on FROM v$database;
 EXIT;
-EOF
 ```
 
 #### **Paso 2.** Habilitar Archivelog Mode si está desactivado:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SHUTDOWN IMMEDIATE;
 STARTUP MOUNT;
 ALTER DATABASE ARCHIVELOG;
 ALTER DATABASE OPEN;
 ALTER PLUGGABLE DATABASE ALL OPEN;
 EXIT;
-EOF
 ```
 
 #### **Paso 3.** Validar destino de los archivelogs:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT name, value FROM v$parameter
 WHERE name LIKE 'log_archive_dest%' OR name = 'log_archive_format';
 EXIT;
-EOF
 ```
 
 <br/><br/>
@@ -145,12 +142,11 @@ EOF
 #### **Paso 1.** Establecer ubicación y tamaño:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 ALTER SYSTEM SET db_recovery_file_dest='/u01/app/oracle/fast_recovery_area' SCOPE=BOTH;
 ALTER SYSTEM SET db_recovery_file_dest_size=20G SCOPE=BOTH;
 SHOW PARAMETER db_recovery_file_dest;
 EXIT;
-EOF
 ```
 
 #### **Paso 2.** Crear directorio con permisos adecuados:
@@ -165,7 +161,7 @@ ls -ld /u01/app/oracle/fast_recovery_area
 #### **Paso 3.** Consultar uso de espacio en FRA:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT file_type, percent_space_used, percent_space_reclaimable, number_of_files
 FROM v$flash_recovery_area_usage ORDER BY percent_space_used DESC;
 SELECT name, space_limit/1024/1024/1024 AS space_limit_gb,
@@ -174,7 +170,6 @@ SELECT name, space_limit/1024/1024/1024 AS space_limit_gb,
        number_of_files
 FROM v$recovery_file_dest;
 EXIT;
-EOF
 ```
 
 <br/><br/>
