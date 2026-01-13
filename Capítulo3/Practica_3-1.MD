@@ -155,7 +155,7 @@ EXIT;
 # Verificar si existe el directorio de FRA
 ls -ld /u01/app/oracle/fast_recovery_area
 
-# Si no existe crearlo con los siguientes comandos:
+# Si el directorio no existe crearlo con los siguientes comandos:
 
 mkdir -p /u01/app/oracle/fast_recovery_area
 chown oracle:oinstall /u01/app/oracle/fast_recovery_area
