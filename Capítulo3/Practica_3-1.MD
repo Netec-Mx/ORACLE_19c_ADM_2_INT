@@ -94,12 +94,11 @@ RMAN> SHOW ALL;
 #### **Paso 3.** Documentar diferencias CDB vs. non-CDB:
 
 ```sql
-sqlplus / as sysdba <<EOF
+sqlplus / as sysdba
 SELECT name, cdb, con_id, con_dbid FROM v$database;
 SELECT con_id, name, open_mode, restricted, total_size/1024/1024 AS size_mb
 FROM v$containers ORDER BY con_id;
 EXIT;
-EOF
 ```
 
 <br/><br/>
