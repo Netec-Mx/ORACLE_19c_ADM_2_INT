@@ -284,7 +284,6 @@ FROM   customer_backup_test;
 ```sql
 CONNECT / AS SYSDBA
 ALTER SYSTEM SWITCH LOGFILE;
-ALTER SESSION SET CONTAINER=PDB1;
 ALTER SYSTEM CHECKPOINT;
 ```
 
@@ -296,27 +295,23 @@ ALTER PLUGGABLE DATABASE PDB1 CLOSE IMMEDIATE;
 
 -- Verificar estado
 SELECT name, open_mode FROM v$pdbs WHERE name = 'PDB1';
-```
-
-#### **Paso 5.** Eliminar el datafile de USERS para simular corrupción/pérdida
-
-```sql
 EXIT;
 ```
 
+#### **Paso 5.** Eliminar el datafile de USERS para simular corrupción/pérdida
 ```bash
 # ADVERTENCIA: Operación destructiva; asegúrate de tener backup
 # Verificar existencia del datafile
-ls -lh /u01/app/oracle/oradata/ORCL/PDB1/users01.dbf
+ls -lh /u01/app/oracle/oradata/ORCL/pdb1/users01.dbf
 
 # Registrar tamaño y timestamp antes de eliminar
-stat /u01/app/oracle/oradata/ORCL/PDB1/users01.dbf > /tmp/deleted_datafile_info.txt
+stat /u01/app/oracle/oradata/ORCL/pdb1/users01.dbf > /tmp/deleted_datafile_info.txt
 
 # Eliminar el datafile (SIMULACIÓN DE PÉRDIDA)
-rm -f /u01/app/oracle/oradata/ORCL/PDB1/users01.dbf
+rm -f /u01/app/oracle/oradata/ORCL/pdb1/users01.dbf
 
 # Verificar eliminación
-ls -lh /u01/app/oracle/oradata/ORCL/PDB1/
+ls -lh /u01/app/oracle/oradata/ORCL/pdb1/
 ```
 
 #### **Paso 6.** Intentar abrir PDB1 para confirmar el fallo
