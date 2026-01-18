@@ -319,7 +319,7 @@ ls -lh /u01/app/oracle/oradata/ORCL/pdb1/
 ```sql
 sqlplus / AS SYSDBA
 ALTER PLUGGABLE DATABASE PDB1 OPEN;
-EXIT;
+EXIT
 ```
 
 #### **Paso 7.** Registrar timestamp del incidente
@@ -354,26 +354,28 @@ echo "Restore iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/restore_start_time.
 -- Ejecutar RESTORE de PDB1
 RMAN TARGET /
 RUN {
-  SET NEWNAME FOR DATAFILE 12 TO '/u01/app/oracle/oradata/ORCL/PDB1/users01.dbf';
+  SET NEWNAME FOR DATAFILE 12 TO '/u01/app/oracle/oradata/ORCL/pdb1/users01.dbf';
   RESTORE PLUGGABLE DATABASE PDB1;
 }
+EXIT
 ```
 
 #### **Paso 3.** Recuperar PDB1 aplicando archivelogs
 
 ```rman
 -- Registrar hora de inicio de recuperación
-HOST echo "Recovery iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/recover_start_time.txt;
+echo "Recovery iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/recover_start_time.txt;
 
 -- Ejecutar RECOVER de PDB1
+RMAN TARGET /
 RECOVER PLUGGABLE DATABASE PDB1;
+EXIT
 ```
 
 #### **Paso 4.** Registrar timestamp de finalización de la recuperación
 
 ```rman
-HOST echo "Recovery finalizado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/recover_end_time.txt;
-EXIT;
+echo "Recovery finalizado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/recover_end_time.txt;
 ```
 
 #### **Paso 5.** Abrir PDB1 y verificar estado
