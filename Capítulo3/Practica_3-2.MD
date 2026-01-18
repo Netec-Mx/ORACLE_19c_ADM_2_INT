@@ -319,6 +319,7 @@ ls -lh /u01/app/oracle/oradata/ORCL/pdb1/
 ```sql
 sqlplus / AS SYSDBA
 ALTER PLUGGABLE DATABASE PDB1 OPEN;
+EXIT;
 ```
 
 #### **Paso 7.** Registrar timestamp del incidente
@@ -341,15 +342,17 @@ rman target /
 ```rman
 -- Verificar que RMAN puede acceder a los backups
 LIST BACKUP OF PLUGGABLE DATABASE PDB1 SUMMARY;
+EXIT
 ```
 
 #### **Paso 2.** Restaurar datafiles de PDB1
 
-```rman
+```bash
 -- Registrar hora de inicio de restauración (desde RMAN con HOST)
-HOST echo "Restore iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/restore_start_time.txt;
+echo "Restore iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/restore_start_time.txt
 
 -- Ejecutar RESTORE de PDB1
+RMAN TARGET /
 RUN {
   SET NEWNAME FOR DATAFILE 12 TO '/u01/app/oracle/oradata/ORCL/PDB1/users01.dbf';
   RESTORE PLUGGABLE DATABASE PDB1;
