@@ -201,7 +201,10 @@ LIST BACKUP OF PLUGGABLE DATABASE PDB1;
 
 ```rman
 -- Validar backup completo sin restaurar
-VALIDATE BACKUPSET TAG 'CDB_FULL_BACKUP_LAB';
+LIST BACKUP SUMMARY
+-- Anota los numeros de backup que correspondan a la etiqueta 'CDB_FULL_BACKUP_LAB'
+-- Valida con los KEYs de los respaldos
+VALIDATE BACKUPSET n1, n2, etc;
 ```
 
 #### **Paso 7.** Consultar métricas detalladas del backup
