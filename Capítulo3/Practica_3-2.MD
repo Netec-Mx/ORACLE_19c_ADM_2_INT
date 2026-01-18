@@ -205,13 +205,10 @@ LIST BACKUP SUMMARY
 -- Anota los numeros de backup que correspondan a la etiqueta 'CDB_FULL_BACKUP_LAB'
 -- Valida con los KEYs de los respaldos
 VALIDATE BACKUPSET n1, n2, etc;
+EXIT
 ```
 
 #### **Paso 7.** Consultar métricas detalladas del backup
-
-```rman
-EXIT;
-```
 
 ```sql
 sqlplus / AS SYSDBA
