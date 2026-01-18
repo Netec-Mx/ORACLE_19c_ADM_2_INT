@@ -164,7 +164,6 @@ cat /tmp/backup_start_time.txt
 #### **Paso 3.** Ejecutar backup completo del CDB
 
 ```rman
-
 -- Conectate con RMAN a la TARGET actual
 
 RMAN TARGET /
@@ -175,6 +174,7 @@ BACKUP AS COMPRESSED BACKUPSET
   DATABASE PLUS ARCHIVELOG
   DELETE INPUT
   TAG 'CDB_FULL_BACKUP_LAB';
+exit
 ```
 
 #### **Paso 4.** Registrar timestamp de fin y calcular duración
@@ -190,6 +190,7 @@ echo "Fin:    $(cat /tmp/backup_end_time.txt)"
 
 ```rman
 -- Resumen de backups
+RMAN TARGET /
 LIST BACKUP SUMMARY;
 
 -- Backups específicos de PDB1
