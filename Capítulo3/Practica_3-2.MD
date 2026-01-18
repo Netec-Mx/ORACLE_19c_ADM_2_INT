@@ -164,7 +164,13 @@ cat /tmp/backup_start_time.txt
 #### **Paso 3.** Ejecutar backup completo del CDB
 
 ```rman
+
+-- Conectate con RMAN a la TARGET actual
+
+RMAN TARGET /
+
 -- Backup completo: database + archivelog + delete input
+
 BACKUP AS COMPRESSED BACKUPSET
   DATABASE PLUS ARCHIVELOG
   DELETE INPUT
