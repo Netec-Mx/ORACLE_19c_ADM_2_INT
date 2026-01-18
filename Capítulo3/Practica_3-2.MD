@@ -283,9 +283,9 @@ FROM   customer_backup_test;
 
 ```sql
 CONNECT / AS SYSDBA
+ALTER SYSTEM SWITCH LOGFILE;
 ALTER SESSION SET CONTAINER=PDB1;
 ALTER SYSTEM CHECKPOINT;
-ALTER SYSTEM SWITCH LOGFILE;
 ```
 
 #### **Paso 4.** Cerrar PDB1 para simular la pérdida
