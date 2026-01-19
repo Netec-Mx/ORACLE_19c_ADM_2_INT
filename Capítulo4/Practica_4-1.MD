@@ -311,21 +311,21 @@ WHERE app_name = 'HR_APP';
 
 ```sql
 -- Crear usuario común para la aplicación (debe empezar con C## o c##)
-CREATE USER c##hr_app_user IDENTIFIED BY Oracle123_HR
+CREATE USER hr_app_user IDENTIFIED BY Oracle123_HR
   DEFAULT TABLESPACE users
   QUOTA UNLIMITED ON users
   CONTAINER = ALL;
 
 -- Otorgar privilegios necesarios
-GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE TO c##hr_app_user CONTAINER = ALL;
-GRANT SELECT ANY DICTIONARY TO c##hr_app_user CONTAINER = ALL;
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE TO hr_app_user CONTAINER = ALL;
+GRANT SELECT ANY DICTIONARY TO hr_app_user CONTAINER = ALL;
 ```
 
 #### **Paso 4.** Crear objetos de aplicación (tablas)
 
 ```sql
 -- Conectar como usuario de aplicación
-CONNECT c##hr_app_user/Oracle123_HR@localhost/app_root
+CONNECT hr_app_user/Oracle123_HR@localhost/app_root
 
 -- Crear tabla de empleados (objeto de aplicación)
 CREATE TABLE employees_app (
@@ -340,8 +340,7 @@ CREATE TABLE employees_app (
     commission_pct NUMBER(2,2),
     manager_id     NUMBER(6),
     department_id  NUMBER(4),
-    created_date   DATE DEFAULT SYSDATE,
-    SHARING = METADATA
+    created_date   DATE DEFAULT SYSDATE
 ) SHARING = METADATA;
 
 -- Crear tabla de departamentos
@@ -349,8 +348,7 @@ CREATE TABLE departments_app (
     department_id   NUMBER(4) PRIMARY KEY,
     department_name VARCHAR2(30) NOT NULL,
     manager_id      NUMBER(6),
-    location_id     NUMBER(4),
-    SHARING = METADATA
+    location_id     NUMBER(4)
 ) SHARING = METADATA;
 
 -- Crear tabla de configuración de aplicación
@@ -358,8 +356,7 @@ CREATE TABLE app_config (
     config_key   VARCHAR2(50) PRIMARY KEY,
     config_value VARCHAR2(200),
     description  VARCHAR2(500),
-    modified_date DATE DEFAULT SYSDATE,
-    SHARING = METADATA
+    modified_date DATE DEFAULT SYSDATE
 ) SHARING = METADATA;
 
 -- Insertar datos de configuración inicial
