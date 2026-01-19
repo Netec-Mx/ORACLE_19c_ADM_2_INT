@@ -317,8 +317,7 @@ CREATE USER hr_app_user IDENTIFIED BY Oracle123_HR
   CONTAINER = ALL;
 
 -- Otorgar privilegios necesarios
-GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE TO hr_app_user CONTAINER = ALL;
-GRANT SELECT ANY DICTIONARY TO hr_app_user CONTAINER = ALL;
+GRANT CREATE SESSION, DBA TO hr_app_user CONTAINER = ALL;
 ```
 
 #### **Paso 4.** Crear objetos de aplicación (tablas)
@@ -328,7 +327,7 @@ GRANT SELECT ANY DICTIONARY TO hr_app_user CONTAINER = ALL;
 CONNECT hr_app_user/Oracle123_HR@localhost/app_root
 
 -- Crear tabla de empleados (objeto de aplicación)
-CREATE TABLE employees_app (
+CREATE TABLE hr_app_use.employees_app (
     employee_id    NUMBER(6) PRIMARY KEY,
     first_name     VARCHAR2(20),
     last_name      VARCHAR2(25) NOT NULL,
