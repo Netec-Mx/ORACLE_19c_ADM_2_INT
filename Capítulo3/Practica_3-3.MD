@@ -183,12 +183,12 @@ PDB1 =
     )
   )
 
-PDB1_DUPLICATE =
+PDB1_CLONE =
   (DESCRIPTION =
     (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
-      (SERVICE_NAME = PDB1)
+      (SERVICE_NAME = pdb1_clone)
     )
   )
 ```
@@ -196,143 +196,28 @@ PDB1_DUPLICATE =
 ```bash
 tnsping PDB1
 tnsping ORCL
-sqlplus sys/oracle_4U@PDB1 as sysdba
+tnsping PDB1_CLONE
 ```
-
 > **Nota:** Verifica que los pings y conexiones respondan correctamente.
 
 <br/><br/>
 
-### Tarea 3. Crear Directorio de Destino para la PDB Clonada
-
-```bash
-mkdir -p $ORACLE_BASE/oradata/ORCL/PDB1_CLONE
-ls -ld $ORACLE_BASE/oradata/ORCL/PDB1_CLONE
-chmod 755 $ORACLE_BASE/oradata/ORCL/PDB1_CLONE
-chown oracle:oinstall $ORACLE_BASE/oradata/ORCL/PDB1_CLONE
-```
-
-> **Nota:** El directorio debe existir con permisos adecuados y propietario `oracle:oinstall`.
-
-<br/><br/>
-
-### Tarea 4. Preparar el Archivo de Password para Conexiones Remotas
-
-```bash
-ls -l $ORACLE_HOME/dbs/orapw$ORACLE_SID
-orapwd file=$ORACLE_HOME/dbs/orapw$ORACLE_SID password=Oracle123 entries=10 force=y
-chmod 640 $ORACLE_HOME/dbs/orapw$ORACLE_SID
-```
-
-> **Nota:** Debe existir y ser legible por el usuario oracle.
-
-<br/><br/>
-
-### Tarea 5. Configurar Parámetros de la PDB Origen
-
-```sql
-CONNECT / AS SYSDBA
-
-ARCHIVE LOG LIST;
-
--- Si no está en modo archivelog:
-SHUTDOWN IMMEDIATE;
-STARTUP MOUNT;
-ALTER DATABASE ARCHIVELOG;
-ALTER DATABASE OPEN;
-
-SELECT name, open_mode FROM v$pdbs WHERE name = 'PDB1';
-ALTER PLUGGABLE DATABASE PDB1 OPEN READ WRITE;
-SHOW PARAMETER file_name_convert;
-```
-
-> **Nota:** Confirma que la base está en modo ARCHIVELOG y la PDB en READ WRITE.
-
-<br/><br/>
-
-### Tarea 6. Ejecutar RMAN Active Duplicate de la PDB
-
-```bash
-rman TARGET sys/Oracle123@ORCL AUXILIARY sys/Oracle123@ORCL
-```
-
-```sql
-SHOW ALL;
-
-RUN {
-    SET PARALLELISM 2;
-    DUPLICATE PLUGGABLE DATABASE PDB1 AS PDB1_CLONE
-        AUXILIARY DESTINATION '$ORACLE_BASE/oradata/ORCL/PDB1_CLONE';
-}
-```
-
-> **Nota:** El proceso puede tardar entre 10–20 minutos según el hardware.
-
-<br/><br/>
-
-### Tarea 7. Monitorear el Progreso de la Clonación (Sesión Paralela)
+### Tarea 3. Crear la Pluggable Database PDB1_CLONE
 
 ```sql
 sqlplus / as sysdba
-
-SELECT
-    sid, serial#, opname, target, sofar, totalwork,
-    ROUND((sofar/totalwork)*100, 2) AS pct_complete,
-    time_remaining, elapsed_seconds
-FROM v$session_longops
-WHERE opname LIKE '%Duplicate%' OR opname LIKE '%RMAN%'
-ORDER BY start_time DESC;
-
-SELECT
-    sid, serial#, username, program, status, event, seconds_in_wait
-FROM v$session
-WHERE program LIKE '%rman%' OR client_info LIKE '%rman%';
-
-SELECT
-    operation, status, mbytes_processed, start_time, end_time
-FROM v$rman_status
-WHERE operation LIKE '%DUPLICATE%'
-ORDER BY start_time DESC;
-
-SELECT
-    pdb_name,
-    ROUND(SUM(phyrds)/1000, 2) AS physical_reads_k,
-    ROUND(SUM(phywrts)/1000, 2) AS physical_writes_k
-FROM v$pdb_iostat_detail
-GROUP BY pdb_name
-ORDER BY pdb_name;
+CREATE PLUGGABLE DATABASE pdb1_clone FROM pdb1
+FILE_NAME_CONVERT = ('/u01/app/oracle/ORCL/pdb1/', '/u01/app/oracle/ORCL/pdb1_clone/');
 ```
 
-> **Nota:** Debe observarse progreso incremental y actividad de I/O.
+> **Nota:** El directorio de la nueva pluggable database se crea automaticamente`.
 
 <br/><br/>
 
-### Tarea 8. Verificar la Creación de la PDB Clonada
-
+### Tarea 4. Abrir la nueva pluggable database
 ```sql
-CONNECT / AS SYSDBA
-
-SELECT pdb_id, pdb_name, status, open_mode, restricted, recovery_status
-FROM cdb_pdbs ORDER BY pdb_name;
-
-SELECT file_name, tablespace_name, ROUND(bytes/1024/1024, 2) AS size_mb, status
-FROM cdb_data_files
-WHERE con_id = (SELECT con_id FROM v$containers WHERE name = 'PDB1_CLONE')
-ORDER BY file_name;
-
-SELECT name, open_mode, restricted, open_time
-FROM v$pdbs
-WHERE name = 'PDB1_CLONE';
-```
-
-> **Nota:** Debe existir `PDB1_CLONE` y encontrarse en estado normal.
-
-<br/><br/>
-
-### Tarea 9. Abrir la PDB Clonada
-
-```sql
-ALTER PLUGGABLE DATABASE PDB1_CLONE OPEN READ WRITE;
+ALTER PLUGGABLE DATABASE pdb1_clone OPEN;
+ALTER SESSION SET CONTAINER=pdb1_clone;
 
 SELECT name, open_mode, restricted FROM v$pdbs WHERE name = 'PDB1_CLONE';
 
@@ -342,15 +227,12 @@ WHERE pdb = 'PDB1_CLONE'
 ORDER BY name;
 ```
 
-> **Nota:** Confirma que el modo sea READ WRITE.
-
+> **Nota:** La nueva PDB esta lista para ser usada.
 <br/><br/>
 
-### Tarea 10. Validar Independencia de Datos entre PDB Origen y Clonada
+### Tarea 5. Validar Independencia de Datos entre PDB Origen y Clonada
 
 ```sql
-ALTER SESSION SET CONTAINER = PDB1_CLONE;
-
 SELECT COUNT(*) FROM testuser.sales_data;
 
 UPDATE testuser.sales_data
@@ -364,12 +246,11 @@ ALTER SESSION SET CONTAINER = PDB1;
 SELECT customer_name FROM testuser.sales_data WHERE ROWNUM <= 5;
 ```
 
-
 > **Nota:** Los datos modificados solo deben reflejarse en la PDB clonada.
 
 <br/><br/>
 
-### Tarea 11. Renombrar la PDB Clonada (Opcional)
+### Tarea 6. Renombrar la PDB Clonada (Opcional)
 
 ```sql
 CONNECT / AS SYSDBA
@@ -455,136 +336,6 @@ SELECT name, open_mode FROM v$pdbs WHERE name = 'PDB1_COPY';
 ```
 
 <br/><br/>
-
-## Resultado esperado
-
-Durante la ejecución de RMAN, deberás ver los canales ORA_DISK_1 y ORA_DISK_2 copiando los datafiles de PDB1 hacia PDB1_CLONE. 
-Cada archivo mostrará el mensaje “datafile copy complete”, y al final aparecerá “Finished Duplicate Db”, confirmando la clonación exitosa en /u01/app/oracle/oradata/CDB1/PDB1_CLONE/.
-
-<br/><br/>
-
-
-## **Salida esperada — RMAN Active Duplicate (CDB1 / PDB1 → PDB1_CLONE)**
-
-```bash
-$ rman TARGET sys/Oracle123@CDB1 AUXILIARY sys/Oracle123@CDB1
-
-Recovery Manager: Release 19.0.0.0.0 - Production on Sat Nov 9 18:20:11 2025
-Copyright (c) 1982, 2025, Oracle and/or its affiliates.  All rights reserved.
-
-connected to target database: CDB1 (DBID=1125899907)
-connected to auxiliary database: CDB1 (not mounted)
-
-RMAN> SHOW ALL;
-
-RMAN configuration parameters are:
-CONFIGURE RETENTION POLICY TO REDUNDANCY 1;
-CONFIGURE CONTROLFILE AUTOBACKUP ON;
-CONFIGURE DEVICE TYPE DISK PARALLELISM 2 BACKUP TYPE TO BACKUPSET;
-CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT   '/u01/app/oracle/fast_recovery_area/CDB1/backupset/%U';
-CONFIGURE COMPRESSION ALGORITHM 'BASIC';
-CONFIGURE ENCRYPTION FOR DATABASE OFF;
-CONFIGURE ARCHIVELOG DELETION POLICY TO NONE;
-CONFIGURE BACKUP OPTIMIZATION OFF;
-CONFIGURE DEFAULT DEVICE TYPE TO DISK;
-
-RMAN> RUN {
-2> SET PARALLELISM 2;
-3> DUPLICATE PLUGGABLE DATABASE PDB1 AS PDB1_CLONE
-4>   AUXILIARY DESTINATION '/u01/app/oracle/oradata/CDB1/PDB1_CLONE';
-5> }
-
-Starting Duplicate Db at 09-NOV-25 18:21:05
-using channel ORA_DISK_1
-using channel ORA_DISK_2
-
-contents of Memory Script:
-{
-   sql clone "alter system set db_name='CDB1' comment='duplicate'";
-   sql clone "alter pluggable database PDB1 open read only";
-   set newname for datafile 1 to new;
-   set newname for tempfile 1 to new;
-   duplicate pluggable database PDB1 to PDB1_CLONE from active database
-     dorecover
-     spfile
-     parameter_value_convert 'PDB1','PDB1_CLONE'
-     nofilenamecheck;
-}
-executing Memory Script
-
-allocated channel: ORA_DISK_1
-channel ORA_DISK_1: SID=72 device type=DISK
-allocated channel: ORA_DISK_2
-channel ORA_DISK_2: SID=87 device type=DISK
-
-channel ORA_DISK_1: starting datafile copy
-input datafile file number=00031 name=/u01/app/oracle/oradata/CDB1/PDB1/system01.dbf
-output file name=/u01/app/oracle/oradata/CDB1/PDB1_CLONE/system01.dbf
-channel ORA_DISK_1: datafile copy complete, elapsed time: 00:02:38
-
-channel ORA_DISK_2: starting datafile copy
-input datafile file number=00032 name=/u01/app/oracle/oradata/CDB1/PDB1/sysaux01.dbf
-output file name=/u01/app/oracle/oradata/CDB1/PDB1_CLONE/sysaux01.dbf
-channel ORA_DISK_2: datafile copy complete, elapsed time: 00:02:41
-
-channel ORA_DISK_1: starting datafile copy
-input datafile file number=00033 name=/u01/app/oracle/oradata/CDB1/PDB1/users01.dbf
-output file name=/u01/app/oracle/oradata/CDB1/PDB1_CLONE/users01.dbf
-channel ORA_DISK_1: datafile copy complete, elapsed time: 00:00:46
-
-channel ORA_DISK_2: starting datafile copy
-input datafile file number=00034 name=/u01/app/oracle/oradata/CDB1/PDB1/undotbs01.dbf
-output file name=/u01/app/oracle/oradata/CDB1/PDB1_CLONE/undotbs01.dbf
-channel ORA_DISK_2: datafile copy complete, elapsed time: 00:00:44
-
-Finished Duplicate Db at 09-NOV-25 18:32:14
-```
-
-<br/><br/>
-
-### **Verificación en RMAN**
-
-```bash
-RMAN> LIST PLUGGABLE DATABASE SUMMARY;
-
-List of Pluggable Databases
-===========================
-
-Key   PDB Name     CON_ID         Status
----   -----------  -------------  ------------
-  1   PDB$SEED     2              AVAILABLE
-  2   PDB1         3              AVAILABLE
-  3   PDB1_CLONE   9              AVAILABLE
-
-
-RMAN> LIST DATAFILE COPY OF PLUGGABLE DATABASE PDB1_CLONE;
-
-List of Datafile Copies
-=======================
-
-File Key   File Name
----------  ---------------------------------------------
-1          /u01/app/oracle/oradata/CDB1/PDB1_CLONE/system01.dbf
-2          /u01/app/oracle/oradata/CDB1/PDB1_CLONE/sysaux01.dbf
-3          /u01/app/oracle/oradata/CDB1/PDB1_CLONE/users01.dbf
-4          /u01/app/oracle/oradata/CDB1/PDB1_CLONE/undotbs01.dbf
-
-
-RMAN> REPORT SCHEMA FOR PLUGGABLE DATABASE PDB1_CLONE;
-
-Report of database schema for PDB1_CLONE
-
-List of Permanent Datafiles
-===========================
-
-File # Name                                          Size (MB)
------- --------------------------------------------- ----------
-31     /u01/app/oracle/oradata/CDB1/PDB1_CLONE/system01.dbf   740
-32     /u01/app/oracle/oradata/CDB1/PDB1_CLONE/sysaux01.dbf   640
-33     /u01/app/oracle/oradata/CDB1/PDB1_CLONE/users01.dbf     60
-34     /u01/app/oracle/oradata/CDB1/PDB1_CLONE/undotbs01.dbf  200
-```
-
 
 > **Nota:**
 > La salida mostrada en esta práctica, incluyendo los valores de **identificadores (`CON_ID`, `PDB_ID`)**, los nombres de los **canales RMAN**, los tiempos de ejecución y los **tamaños de los datafiles**, puede variar ligeramente según el entorno del participante.
