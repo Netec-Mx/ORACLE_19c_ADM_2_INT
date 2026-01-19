@@ -319,6 +319,7 @@ ls -lh /u01/app/oracle/oradata/ORCL/pdb1/
 ```sql
 sqlplus / AS SYSDBA
 ALTER PLUGGABLE DATABASE PDB1 OPEN;
+-- Anote el numero de datafile que no fue encontrado, NUM.
 EXIT
 ```
 
@@ -352,11 +353,9 @@ EXIT
 echo "Restore iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/restore_start_time.txt
 
 -- Ejecutar RESTORE de PDB1
+-- Use el número de datafile que anoto anteriormente (NUM)
 RMAN TARGET /
-RUN {
-  SET NEWNAME FOR DATAFILE 12 TO '/u01/app/oracle/oradata/ORCL/pdb1/users01.dbf';
-  RESTORE PLUGGABLE DATABASE PDB1;
-}
+RESTORE DATAFILE NUM;
 EXIT
 ```
 
@@ -367,8 +366,9 @@ EXIT
 echo "Recovery iniciado: $(date '+%Y-%m-%d %H:%M:%S')" > /tmp/recover_start_time.txt;
 
 -- Ejecutar RECOVER de PDB1
+-- Use el número de datafile que anoto anteriormente (NUM)
 RMAN TARGET /
-RECOVER PLUGGABLE DATABASE PDB1;
+RECOVER DATAFILE NUM;
 EXIT
 ```
 
@@ -415,15 +415,12 @@ FROM   customer_backup_test;
 SELECT COUNT(*) AS postbackup_records
 FROM   customer_backup_test
 WHERE  customer_name LIKE 'PostBackup_%';
+EXIT
 ```
 
 > Si este valor es **10000**, la recuperación aplicó correctamente los archivelogs.
 
 #### **Paso 7.** Validar integridad física con RMAN
-
-```sql
-EXIT
-```
 
 ```bash
 rman target /
@@ -432,6 +429,7 @@ rman target /
 ```rman
 -- Validar integridad física de PDB1
 VALIDATE PLUGGABLE DATABASE PDB1;
+EXIT
 ```
 
 > Verifica que `STATUS = OK` y `MARKED CORRUPT = 0` para todos los datafiles.
