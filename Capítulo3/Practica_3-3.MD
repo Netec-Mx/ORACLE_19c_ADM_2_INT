@@ -132,7 +132,7 @@ CREATE TABLE sales_data (
 );
 
 BEGIN
-    FOR i IN 1..1000000 LOOP
+    FOR i IN 1..100000 LOOP
         INSERT INTO sales_data VALUES (
             i,
             'Customer_' || i,
@@ -159,7 +159,7 @@ GROUP BY tablespace_name;
 EXIT
 ```
 
-> **Nota:** Debe haber alrededor de 1,000,000 registros y un tamaño de varios cientos de MB.
+> **Nota:** Debe haber alrededor de 100,000 registros y un tamaño de varios MB.
 
 <br/><br/>
 
