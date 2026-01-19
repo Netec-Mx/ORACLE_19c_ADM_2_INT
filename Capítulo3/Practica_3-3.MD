@@ -63,6 +63,7 @@
 
 * Configuración de RMAN y backups de CDB completado.
 * Estrategias de backup de PDBs completado.
+* Haber creado el usuario TESTUSER y otorgado privilegios del ejercicio anterior.
 
 <br/><br/>
 
@@ -112,12 +113,14 @@ ORDER  BY c.name;
 ```sql
 ALTER SESSION SET CONTAINER = PDB1;
 
+-- Solo en caso de no haber creado el usuario `testuser` ejecutar los siguientes comandos SQL.
 CREATE USER testuser IDENTIFIED BY Oracle123
 DEFAULT TABLESPACE users
 QUOTA UNLIMITED ON users;
 
 GRANT CREATE SESSION, CREATE TABLE TO testuser;
 
+-- Conexión a testuser
 CONNECT testuser/Oracle123@localhost:1521/PDB1
 
 CREATE TABLE sales_data (
