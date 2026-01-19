@@ -1,4 +1,4 @@
-# Práctica 3.3 Active Duplicate de una PDB hacia la misma CDB
+# Práctica 3.3 Duplicando una PDB hacia la misma CDB
 
 
 
@@ -7,11 +7,9 @@
 ## Objetivos
 
 * Configurar la infraestructura de conectividad Oracle Net (listener, tnsnames) necesaria para operaciones RMAN ACTIVE DUPLICATE.
-* Ejecutar una clonación activa de PDB usando RMAN DUPLICATE sin requerir backups previos.
-* Monitorear el progreso de la operación de clonación mediante vistas dinámicas de rendimiento (`V$SESSION_LONGOPS`, `V$RMAN_STATUS`).
+* Ejecutar una clonación activa de PDB usando la linea de comandos de SQL sin requerir backups previos.
 * Validar la independencia completa entre la PDB origen y la PDB clonada mediante pruebas de modificación de datos.
 * Documentar el consumo de recursos (red, I/O, memoria) durante el proceso y comparar con métodos alternativos de clonación.
-
 
 
 <br/><br/>
@@ -38,6 +36,7 @@
 | `V$SESSION_LONGOPS`                               | Muestra el progreso de operaciones de larga duración, como duplicaciones RMAN.            |
 | `V$RMAN_STATUS`                                   | Contiene el historial de operaciones RMAN (BACKUP, RESTORE, DUPLICATE, etc.).             |
 | `V$PDB_IOSTAT_DETAIL`                             | Reporta estadísticas de I/O (lecturas y escrituras físicas) por PDB.                      |
+| `CREATE DATABASE PDB_COPY FROM PDB_ORIGINAL ...`           | Ejecuta una clonación por comando de una PDB sin requerir respaldos previos.                   |
 | `RMAN DUPLICATE PLUGGABLE DATABASE ...`           | Ejecuta una clonación activa de una PDB sin requerir respaldos previos.                   |
 | `ALTER PLUGGABLE DATABASE ... OPEN`               | Abre una PDB en modo `READ WRITE` o `READ ONLY`.                                          |
 | `ALTER PLUGGABLE DATABASE ... RENAME GLOBAL_NAME` | Permite renombrar una PDB existente dentro de la misma CDB.                               |
