@@ -157,8 +157,7 @@ SELECT
     ROUND(SUM(bytes)/1024/1024, 2) AS size_mb
 FROM user_segments
 GROUP BY tablespace_name;
-
-CONNECT / AS SYSDBA
+EXIT
 ```
 
 > **Nota:** Debe haber alrededor de 1,000,000 registros y un tamaño de varios cientos de MB.
