@@ -449,6 +449,7 @@ ALTER SESSION SET CONTAINER=PDB2;
 
 -- Consulta simple para confirmar acceso
 SELECT tablespace_name, status FROM dba_tablespaces;
+EXIT
 ```
 
 > Si la consulta devuelve resultados sin errores, **PDB2** no fue impactada.
