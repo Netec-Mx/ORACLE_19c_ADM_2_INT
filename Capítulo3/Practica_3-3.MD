@@ -277,17 +277,6 @@ SELECT name, open_mode FROM v$pdbs WHERE name = 'PDB1_COPY';
 CONNECT / AS SYSDBA
 
 SELECT
-    pdb_name,
-    ROUND(SUM(phyrds), 2) AS total_physical_reads,
-    ROUND(SUM(phywrts), 2) AS total_physical_writes,
-    ROUND(SUM(phyblkrd), 2) AS total_blocks_read,
-    ROUND(SUM(phyblkwrt), 2) AS total_blocks_written
-FROM v$pdb_iostat_detail
-WHERE pdb_name IN ('PDB1', 'PDB1_COPY')
-GROUP BY pdb_name
-ORDER BY pdb_name;
-
-SELECT
     operation, status, start_time, end_time,
     ROUND((end_time - start_time) * 24 * 60, 2) AS duration_minutes,
     ROUND(mbytes_processed, 2) AS mb_processed,
@@ -297,15 +286,6 @@ WHERE operation = 'DUPLICATE'
     AND start_time > SYSDATE - 1
 ORDER BY start_time DESC
 FETCH FIRST 5 ROWS ONLY;
-
-SELECT
-    pdb_name,
-    ROUND(SUM(bytes)/1024/1024/1024, 2) AS size_gb,
-    COUNT(*) AS num_datafiles
-FROM cdb_data_files
-WHERE pdb_name IN ('PDB1', 'PDB1_COPY')
-GROUP BY pdb_name
-ORDER BY pdb_name;
 
 SELECT name, value, ROUND(value/1024/1024, 2) AS value_mb
 FROM v$sysstat
@@ -329,8 +309,8 @@ SELECT pdb_name, status FROM cdb_pdbs WHERE pdb_name = 'PDB1_COPY';
 ```
 
 ```bash
-ls -l $ORACLE_BASE/oradata/ORCL/PDB1_CLONE/
-rm -rf $ORACLE_BASE/oradata/ORCL/PDB1_CLONE/
+ls -l $ORACLE_BASE/oradata/ORCL/pdb1_clone/
+rm -rf $ORACLE_BASE/oradata/ORCL/pdb1_clone/
 ```
 
 > **Nota:** Si se desea conservar la PDB, solo cerrarla:
