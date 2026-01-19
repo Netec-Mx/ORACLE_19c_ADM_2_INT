@@ -509,13 +509,10 @@ SELECT item, units, sofar, total,
 FROM   v$recovery_progress
 WHERE  start_time > SYSDATE - 1
 ORDER  BY start_time DESC;
+EXIT
 ```
 
 #### **Paso 4.** Generar reporte técnico desde RMAN
-
-```sql
-EXIT;
-```
 
 ```bash
 rman target /
