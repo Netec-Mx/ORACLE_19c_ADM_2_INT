@@ -191,21 +191,12 @@ PDB1_DUPLICATE =
       (SERVICE_NAME = PDB1)
     )
   )
-
-ORCL =
-  (DESCRIPTION =
-    (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
-    (CONNECT_DATA =
-      (SERVER = DEDICATED)
-      (SERVICE_NAME = ORCL)
-    )
-  )
 ```
 
 ```bash
 tnsping PDB1
 tnsping ORCL
-sqlplus sys/Oracle123@PDB1 as sysdba
+sqlplus sys/oracle_4U@PDB1 as sysdba
 ```
 
 > **Nota:** Verifica que los pings y conexiones respondan correctamente.
