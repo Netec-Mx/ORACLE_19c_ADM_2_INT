@@ -221,7 +221,7 @@ show pdbs;
 ALTER PLUGGABLE DATABASE pdb1_clone OPEN;
 ALTER SESSION SET CONTAINER=pdb1_clone;
 
-SELECT name, open_mode, restricted FROM v$pdbs WHERE name = 'PDB1_CLONE';
+SELECT name, restricted FROM v$pdbs WHERE name = 'PDB1_CLONE';
 
 SELECT name, pdb, network_name
 FROM cdb_services
@@ -263,7 +263,7 @@ ALTER PLUGGABLE DATABASE PDB1_CLONE RENAME GLOBAL_NAME TO PDB1_COPY;
 ALTER PLUGGABLE DATABASE PDB1_COPY CLOSE IMMEDIATE;
 ALTER PLUGGABLE DATABASE PDB1_COPY OPEN READ WRITE;
 
-SELECT pdb_name, status, open_mode FROM cdb_pdbs WHERE pdb_name = 'PDB1_COPY';
+SELECT pdb_name, status FROM cdb_pdbs WHERE pdb_name = 'PDB1_COPY';
 SELECT name, open_mode FROM v$pdbs WHERE name = 'PDB1_COPY';
 ```
 
