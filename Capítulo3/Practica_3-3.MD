@@ -101,7 +101,6 @@ JOIN   v$containers c
 WHERE  c.name = 'PDB1'
 GROUP  BY c.name
 ORDER  BY c.name;
-sshow
 ```
 
 <br/><br/>
