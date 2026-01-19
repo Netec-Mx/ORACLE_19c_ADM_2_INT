@@ -519,8 +519,8 @@ rman target /
 ```
 
 ```rman
-LIST RESTORE OF PLUGGABLE DATABASE PDB1;
-LIST RECOVER OF PLUGGABLE DATABASE PDB1;
+LIST BACKUP OF PLUGGABLE DATABASE PDB1;
+EXIT
 ```
 
 #### **Paso 5.** Crear documento de resumen del incidente
