@@ -6,7 +6,7 @@
 
 ## Objetivos
 
-* Configurar la infraestructura de conectividad Oracle Net (listener, tnsnames) necesaria para operaciones RMAN ACTIVE DUPLICATE.
+* Configurar la infraestructura de conectividad Oracle Net (listener, tnsnames) necesaria para operaciones.
 * Ejecutar una clonación activa de PDB usando la linea de comandos de SQL sin requerir backups previos.
 * Validar la independencia completa entre la PDB origen y la PDB clonada mediante pruebas de modificación de datos.
 * Documentar el consumo de recursos (red, I/O, memoria) durante el proceso y comparar con métodos alternativos de clonación.
