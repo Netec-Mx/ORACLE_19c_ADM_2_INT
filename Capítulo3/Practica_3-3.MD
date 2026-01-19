@@ -206,7 +206,7 @@ tnsping PDB1_CLONE
 ```sql
 sqlplus / as sysdba
 CREATE PLUGGABLE DATABASE pdb1_clone FROM pdb1
-FILE_NAME_CONVERT = ('/u01/app/oracle/ORCL/pdb1/', '/u01/app/oracle/ORCL/pdb1_clone/');
+FILE_NAME_CONVERT = ('/u01/app/oracle/oradata/ORCL/pdb1/', '/u01/app/oracle/oradata/ORCL/pdb1_clone/');
 ```
 
 > **Nota:** El directorio de la nueva pluggable database se crea automaticamente`.
