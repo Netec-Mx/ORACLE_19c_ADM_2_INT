@@ -331,10 +331,10 @@ GRANT CREATE SESSION, DBA TO hr_app_user CONTAINER = ALL;
 
 ```sql
 -- Mostrar usuario debe ser SYS
-show user;
+SHOW USER;
 
 -- Crear tabla de empleados (objeto de aplicación)
-CREATE TABLE hr_app_use.employees_app SHARING = METADATA (
+CREATE TABLE hr_app_user.employees_app SHARING = METADATA (
     employee_id    NUMBER(6) PRIMARY KEY,
     first_name     VARCHAR2(20),
     last_name      VARCHAR2(25) NOT NULL,
