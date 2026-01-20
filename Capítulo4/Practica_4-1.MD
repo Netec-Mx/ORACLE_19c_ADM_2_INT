@@ -251,6 +251,7 @@ CREATE PLUGGABLE DATABASE app_root AS APPLICATION CONTAINER
   STORAGE (MAXSIZE 10G)
   DEFAULT TABLESPACE users
     DATAFILE SIZE 100M AUTOEXTEND ON NEXT 10M MAXSIZE 1G;
+SHOW PDBS;
 ```
 
 #### **Paso 2.** Abrir `APP_ROOT` en READ WRITE
@@ -274,13 +275,18 @@ ALTER PLUGGABLE DATABASE app_root SAVE STATE;
 -- Verificar configuración guardada
 COL instance_name FORMAT A15
 SELECT * FROM dba_pdb_saved_states WHERE con_name = 'APP_ROOT';
+
+ALTER SESSION SET CONTAINER = app_root;
+
+SHOW con_name;
+SHOW user;
 ```
 
 <br/><br/>
 
 ### Tarea 4. Conectar al Application Root e Instalar la Aplicación Base
 
-Se cambia el contexto a **APP_ROOT** (`ALTER SESSION SET CONTAINER=app_root`) y se instala una aplicación base llamada **HR_APP v1.0** mediante el ciclo `BEGIN INSTALL` / `END INSTALL`. Durante la instalación, se crea el usuario común `C##HR_APP_USER`, las tablas de empleados, departamentos y configuración, la vista `EMP_DEPT_VIEW`, y el procedimiento `ADD_EMPLOYEE`. Todos los objetos se crean con `SHARING = METADATA` para que su definición se sincronice automáticamente hacia las Application PDBs, pero no sus datos.
+Se cambia el contexto a **APP_ROOT** (`ALTER SESSION SET CONTAINER=app_root`) y se instala una aplicación base llamada **HR_APP v1.0** mediante el ciclo `BEGIN INSTALL` / `END INSTALL`. Durante la instalación, se crea el usuario común `HR_APP_USER`, las tablas de empleados, departamentos y configuración, la vista `EMP_DEPT_VIEW`, y el procedimiento `ADD_EMPLOYEE`. Todos los objetos se crean con `SHARING = METADATA` para que su definición se sincronice automáticamente hacia las Application PDBs, pero no sus datos.
 
 <br/><br/>
 
@@ -292,7 +298,8 @@ Se cambia el contexto a **APP_ROOT** (`ALTER SESSION SET CONTAINER=app_root`) y 
 ALTER SESSION SET CONTAINER = app_root;
 
 -- Verificar contenedor actual
-SHOW CON_NAME
+SHOW CON_NAME;
+SHOW USER;
 ```
 
 #### **Paso 2.** Iniciar instalación de la aplicación v1.0
@@ -323,11 +330,11 @@ GRANT CREATE SESSION, DBA TO hr_app_user CONTAINER = ALL;
 #### **Paso 4.** Crear objetos de aplicación (tablas)
 
 ```sql
--- Conectar como usuario de aplicación
-CONNECT hr_app_user/Oracle123_HR@localhost/app_root
+-- Mostrar usuario debe ser SYS
+show user;
 
 -- Crear tabla de empleados (objeto de aplicación)
-CREATE TABLE hr_app_use.employees_app (
+CREATE TABLE hr_app_use.employees_app SHARING = METADATA (
     employee_id    NUMBER(6) PRIMARY KEY,
     first_name     VARCHAR2(20),
     last_name      VARCHAR2(25) NOT NULL,
@@ -340,10 +347,10 @@ CREATE TABLE hr_app_use.employees_app (
     manager_id     NUMBER(6),
     department_id  NUMBER(4),
     created_date   DATE DEFAULT SYSDATE
-) SHARING = METADATA;
+);
 
 -- Crear tabla de departamentos
-CREATE TABLE departments_app (
+CREATE TABLE hr_app_use.departments_app SHARING = METADATA (
     department_id   NUMBER(4) PRIMARY KEY,
     department_name VARCHAR2(30) NOT NULL,
     manager_id      NUMBER(6),
@@ -351,7 +358,7 @@ CREATE TABLE departments_app (
 ) SHARING = METADATA;
 
 -- Crear tabla de configuración de aplicación
-CREATE TABLE app_config (
+CREATE TABLE hr_app_use.app_config SHARING = METADATA  (
     config_key   VARCHAR2(50) PRIMARY KEY,
     config_value VARCHAR2(200),
     description  VARCHAR2(500),
@@ -359,13 +366,13 @@ CREATE TABLE app_config (
 ) SHARING = METADATA;
 
 -- Insertar datos de configuración inicial
-INSERT INTO app_config (config_key, config_value, description)
+INSERT INTO hr_app_use.app_config (config_key, config_value, description)
 VALUES ('APP_VERSION', '1.0', 'Current application version');
 
-INSERT INTO app_config (config_key, config_value, description)
+INSERT INTO hr_app_use.app_config (config_key, config_value, description)
 VALUES ('MAX_SALARY', '50000', 'Maximum salary allowed for new employees');
 
-INSERT INTO app_config (config_key, config_value, description)
+INSERT INTO hr_app_use.app_config (config_key, config_value, description)
 VALUES ('COMPANY_NAME', 'Acme Corporation', 'Company name for reports');
 
 COMMIT;
@@ -384,15 +391,15 @@ SELECT
     e.salary,
     d.department_name,
     d.location_id
-FROM employees_app e
-LEFT JOIN departments_app d ON e.department_id = d.department_id;
+FROM hr_app_use.employees_app e
+LEFT JOIN hr_app_use.departments_app d ON e.department_id = d.department_id;
 ```
 
 #### **Paso 6.** Crear procedimiento almacenado
 
 ```sql
 -- Crear procedimiento para añadir empleado
-CREATE OR REPLACE PROCEDURE add_employee (
+CREATE OR REPLACE PROCEDURE hr_app_use.add_employee SHARING = METADATA (
     p_first_name   IN VARCHAR2,
     p_last_name    IN VARCHAR2,
     p_email        IN VARCHAR2,
@@ -400,14 +407,14 @@ CREATE OR REPLACE PROCEDURE add_employee (
     p_job_id       IN VARCHAR2,
     p_salary       IN NUMBER,
     p_department_id IN NUMBER DEFAULT NULL
-) SHARING = METADATA
+) 
 AS
     v_employee_id NUMBER;
     v_max_salary  NUMBER;
 BEGIN
     -- Obtener configuración de salario máximo
     SELECT TO_NUMBER(config_value) INTO v_max_salary
-    FROM app_config WHERE config_key = 'MAX_SALARY';
+    FROM hr_app_use.app_config WHERE config_key = 'MAX_SALARY';
 
     -- Validar salario
     IF p_salary > v_max_salary THEN
@@ -415,10 +422,10 @@ BEGIN
     END IF;
 
     -- Generar nuevo ID de empleado
-    SELECT NVL(MAX(employee_id), 0) + 1 INTO v_employee_id FROM employees_app;
+    SELECT NVL(MAX(employee_id), 0) + 1 INTO v_employee_id FROM hr_app_use.employees_app;
 
     -- Insertar empleado
-    INSERT INTO employees_app (
+    INSERT INTO hr_app_use.employees_app (
         employee_id, first_name, last_name, email, hire_date,
         job_id, salary, department_id
     ) VALUES (
@@ -472,7 +479,7 @@ COL sharing FORMAT A15
 
 SELECT owner, object_name, object_type, sharing
 FROM dba_objects
-WHERE owner = 'C##HR_APP_USER'
+WHERE owner = 'HR_APP_USER'
   AND object_name LIKE '%APP%'
 ORDER BY object_type, object_name;
 ```
@@ -522,7 +529,7 @@ Se crea **APP_PDB1**, la primera PDB derivada del Application Root, usando el m�
 #### **Paso 1.** Crear APP_PDB1 con FILE_NAME_CONVERT
 
 ```sql
--- Asegurarse de estar en CDB$ROOT o APP_ROOT
+-- Asegurarse de estar en APP_ROOT
 ALTER SESSION SET CONTAINER = app_root;
 
 -- Crear primera Application PDB
@@ -555,7 +562,7 @@ ALTER PLUGGABLE DATABASE app_pdb1 SAVE STATE;
 
 ### Tarea 7. Sincronizar APP_PDB1 con la Aplicación
 
- Una vez creada la primera Application PDB, se sincroniza con la aplicación instalada en APP_ROOT mediante `ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC`. Este comando replica las definiciones de objetos de `C##HR_APP_USER` hacia APP_PDB1. Luego se validan las vistas `DBA_APPLICATIONS` y `DBA_OBJECTS` para confirmar la propagación de metadatos. Las tablas deben estar vacías, confirmando que solo se copiaron las definiciones. 
+ Una vez creada la primera Application PDB, se sincroniza con la aplicación instalada en APP_ROOT mediante `ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC`. Este comando replica las definiciones de objetos de `HR_APP_USER` hacia APP_PDB1. Luego se validan las vistas `DBA_APPLICATIONS` y `DBA_OBJECTS` para confirmar la propagación de metadatos. Las tablas deben estar vacías, confirmando que solo se copiaron las definiciones. 
 
 <br/><br/>
 
@@ -593,7 +600,7 @@ COL sharing FORMAT A15
 
 SELECT owner, object_name, object_type, sharing, origin_con_id
 FROM dba_objects
-WHERE owner = 'C##HR_APP_USER'
+WHERE owner = 'HR_APP_USER'
   AND object_name LIKE '%APP%'
 ORDER BY object_type, object_name;
 ```
@@ -602,7 +609,7 @@ ORDER BY object_type, object_name;
 
 ```sql
 -- Conectar como usuario de aplicación en APP_PDB1
-CONNECT c##hr_app_user/Oracle123_HR@localhost/app_pdb1
+CONNECT hr_app_user/Oracle123_HR@localhost/app_pdb1
 
 -- Verificar contenido de tablas
 SELECT COUNT(*) as employee_count FROM employees_app;
@@ -719,7 +726,7 @@ Se insertan datos en cada PDB para comprobar que las definiciones son compartida
 
 ```sql
 -- Conectar como usuario de aplicación en APP_PDB1
-CONNECT c##hr_app_user/Oracle123_HR@localhost/app_pdb1
+CONNECT hr_app_user/Oracle123_HR@localhost/app_pdb1
 
 -- Insertar departamentos
 INSERT INTO departments_app VALUES (10, 'Administración', NULL, 1700);
@@ -749,7 +756,7 @@ ORDER BY employee_id;
 
 ```sql
 -- Conectar a APP_PDB2
-CONNECT c##hr_app_user/Oracle123_HR@localhost/app_pdb2
+CONNECT hr_app_user/Oracle123_HR@localhost/app_pdb2
 
 -- Insertar departamentos diferentes
 INSERT INTO departments_app VALUES (50, 'Recursos Humanos', NULL, 2400);
@@ -770,7 +777,7 @@ FROM employees_app;
 
 ```sql
 -- Conectar a APP_PDB3
-CONNECT c##hr_app_user/Oracle123_HR@localhost/app_pdb3
+CONNECT hr_app_user/Oracle123_HR@localhost/app_pdb3
 
 -- Insertar departamentos
 INSERT INTO departments_app VALUES (80, 'Investigación', NULL, 1500);
@@ -867,7 +874,7 @@ ORDER BY p.pdb_name;
 
 ### Tarea 12. Ejecutar Checklist de Validación Post-Creación
 
- Se validan aspectos globales del entorno tras la creación de todas las PDBs: modo de apertura (`READ WRITE`), existencia de usuarios comunes (`C##HR_APP_USER`), tablespaces, servicios registrados (`v$services`), objetos en cada PDB (`CDB_OBJECTS`), y conteo de datos reales en las tablas de aplicación mediante un bloque PL/SQL iterativo. Esta tarea garantiza la integridad general del entorno multitenant.
+ Se validan aspectos globales del entorno tras la creación de todas las PDBs: modo de apertura (`READ WRITE`), existencia de usuarios comunes (`HR_APP_USER`), tablespaces, servicios registrados (`v$services`), objetos en cada PDB (`CDB_OBJECTS`), y conteo de datos reales en las tablas de aplicación mediante un bloque PL/SQL iterativo. Esta tarea garantiza la integridad general del entorno multitenant.
 
 <br/><br/>
 
@@ -891,7 +898,7 @@ COL con_id FORMAT 999999
 
 SELECT con_id, username, common, account_status
 FROM cdb_users
-WHERE username = 'C##HR_APP_USER'
+WHERE username = 'HR_APP_USER'
 ORDER BY con_id;
 ```
 
@@ -941,7 +948,7 @@ SELECT
     object_type,
     COUNT(*) as object_count
 FROM cdb_objects
-WHERE owner = 'C##HR_APP_USER'
+WHERE owner = 'HR_APP_USER'
   AND con_id IN (SELECT con_id FROM v$containers WHERE name LIKE 'APP%')
 GROUP BY con_id, owner, object_type
 ORDER BY con_id, object_type;
@@ -961,7 +968,7 @@ BEGIN
 
         -- Contar empleados
         EXECUTE IMMEDIATE 'ALTER SESSION SET CONTAINER = ' || v_pdb_name;
-        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM c##hr_app_user.employees_app' INTO v_count;
+        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM hr_app_user.employees_app' INTO v_count;
         DBMS_OUTPUT.PUT_LINE(v_pdb_name || ' - Employees: ' || v_count);
 
         -- Contar departamentos
@@ -993,14 +1000,14 @@ CONNECT / AS SYSDBA
 ALTER SESSION SET CONTAINER = app_root;
 
 -- Crear tabla de auditoría de configuración
-CREATE TABLE app_configuration_audit (
+CREATE TABLE app_configuration_audit SHARING = METADATA (
     audit_id        NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     audit_timestamp TIMESTAMP DEFAULT SYSTIMESTAMP,
     pdb_name        VARCHAR2(30),
     configuration_item VARCHAR2(100),
     configuration_value VARCHAR2(500),
     notes           VARCHAR2(1000)
-) SHARING = METADATA;
+);
 
 -- Insertar registros de configuración
 INSERT INTO app_configuration_audit (pdb_name, configuration_item, configuration_value, notes)
