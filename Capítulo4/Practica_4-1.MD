@@ -382,7 +382,7 @@ COMMIT;
 
 ```sql
 -- Crear vista que combina empleados y departamentos
-CREATE VIEW emp_dept_view SHARING = METADATA AS
+CREATE VIEW hr_app_user.emp_dept_view SHARING = METADATA AS
 SELECT
     e.employee_id,
     e.first_name,
