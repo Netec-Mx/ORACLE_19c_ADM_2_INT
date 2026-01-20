@@ -533,7 +533,8 @@ ALTER SESSION SET CONTAINER = app_root;
 CREATE PLUGGABLE DATABASE app_pdb1
   ADMIN USER pdb1_admin IDENTIFIED BY Oracle123_PDB1
   ROLES = (DBA)
-  FILE_NAME_CONVERT = ('/app_root/', '/app_pdb1/');
+  FILE_NAME_CONVERT = ('/u01/app/oracle/oradata/ORCL/pdbseed/', 
+  '/u01/app/oracle/oradata/ORCL/app_pdb1/');
 ```
 
 #### **Paso 2.** Abrir APP_PDB1
