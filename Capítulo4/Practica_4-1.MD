@@ -1224,7 +1224,7 @@ WHERE name IN ('APP_PDB1', 'APP_PDB2', 'APP_PDB3')
 ```sql
 SELECT con_id, COUNT(*) as object_count
 FROM cdb_objects
-WHERE owner = 'C##HR_APP_USER'
+WHERE owner = 'HR_APP_USER'
   AND con_id IN (SELECT con_id FROM v$containers WHERE name LIKE 'APP_PDB%')
 GROUP BY con_id
 HAVING COUNT(*) >= 5;
@@ -1236,15 +1236,15 @@ HAVING COUNT(*) >= 5;
 ```sql
 -- Ejecutar desde cada PDB
 ALTER SESSION SET CONTAINER = app_pdb1;
-SELECT COUNT(*) FROM c##hr_app_user.employees_app;
+SELECT COUNT(*) FROM hr_app_user.employees_app;
 -- Resultado esperado: > 0
 
 ALTER SESSION SET CONTAINER = app_pdb2;
-SELECT COUNT(*) FROM c##hr_app_user.employees_app;
+SELECT COUNT(*) FROM hr_app_user.employees_app;
 -- Resultado esperado: > 0
 
 ALTER SESSION SET CONTAINER = app_pdb3;
-SELECT COUNT(*) FROM c##hr_app_user.employees_app;
+SELECT COUNT(*) FROM hr_app_user.employees_app;
 -- Resultado esperado: > 0
 ```
 
