@@ -611,7 +611,7 @@ WHERE owner = 'HR_APP_USER'
 ORDER BY object_type, object_name;
 ```
 
-#### **Paso 4.** Confirmar que las tablas están vacías (solo metadatos)
+#### **Paso 4.** Confirmar que las tablas están vacías (solo metadatos) menos config_count.
 
 ```sql
 -- Conectar como usuario de aplicación en APP_PDB1
