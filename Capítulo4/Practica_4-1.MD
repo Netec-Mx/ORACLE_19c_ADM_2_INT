@@ -695,6 +695,9 @@ Se crea **APP_PDB3** usando el parámetro `CREATE_FILE_DEST` para asignar explí
 -- Cambiar a APP_ROOT
 ALTER SESSION SET CONTAINER = app_root;
 
+-- Crear el directorio para la PDB app_pdb3
+!mkdir /u01/app/oracle/oradata/ORCL/app_pdb3
+
 -- Crear tercera Application PDB con CREATE_FILE_DEST específico
 CREATE PLUGGABLE DATABASE app_pdb3
   ADMIN USER pdb3_admin IDENTIFIED BY Oracle123_PDB3
