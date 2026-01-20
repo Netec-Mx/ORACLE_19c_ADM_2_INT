@@ -572,6 +572,12 @@ ALTER SESSION SET CONTAINER = app_pdb1;
 
 -- Sincronizar con la aplicación
 ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC;
+
+-- Si da el error ORA-00959: tablespace 'USERS' does not exist, crearlo.
+CREATE TABLESPACE USERS DATAFILE SIZE 100M AUTOEXTEND ON NEXT 10M MAXSIZE 2GB;
+
+-- Volver a sincronizar con la aplicación
+ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC;
 ```
 
 #### **Paso 2.** Verificar estado de la aplicación en APP_PDB1
