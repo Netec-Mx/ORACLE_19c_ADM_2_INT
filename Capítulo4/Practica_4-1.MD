@@ -350,29 +350,29 @@ CREATE TABLE hr_app_user.employees_app SHARING = METADATA (
 );
 
 -- Crear tabla de departamentos
-CREATE TABLE hr_app_use.departments_app SHARING = METADATA (
+CREATE TABLE hr_app_user.departments_app SHARING = METADATA (
     department_id   NUMBER(4) PRIMARY KEY,
     department_name VARCHAR2(30) NOT NULL,
     manager_id      NUMBER(6),
     location_id     NUMBER(4)
-) SHARING = METADATA;
+);
 
 -- Crear tabla de configuración de aplicación
-CREATE TABLE hr_app_use.app_config SHARING = METADATA  (
+CREATE TABLE hr_app_user.app_config SHARING = METADATA  (
     config_key   VARCHAR2(50) PRIMARY KEY,
     config_value VARCHAR2(200),
     description  VARCHAR2(500),
     modified_date DATE DEFAULT SYSDATE
-) SHARING = METADATA;
+);
 
 -- Insertar datos de configuración inicial
-INSERT INTO hr_app_use.app_config (config_key, config_value, description)
+INSERT INTO hr_app_user.app_config (config_key, config_value, description)
 VALUES ('APP_VERSION', '1.0', 'Current application version');
 
-INSERT INTO hr_app_use.app_config (config_key, config_value, description)
+INSERT INTO hr_app_user.app_config (config_key, config_value, description)
 VALUES ('MAX_SALARY', '50000', 'Maximum salary allowed for new employees');
 
-INSERT INTO hr_app_use.app_config (config_key, config_value, description)
+INSERT INTO hr_app_user.app_config (config_key, config_value, description)
 VALUES ('COMPANY_NAME', 'Acme Corporation', 'Company name for reports');
 
 COMMIT;
@@ -391,15 +391,15 @@ SELECT
     e.salary,
     d.department_name,
     d.location_id
-FROM hr_app_use.employees_app e
-LEFT JOIN hr_app_use.departments_app d ON e.department_id = d.department_id;
+FROM hr_app_user.employees_app e
+LEFT JOIN hr_app_user.departments_app d ON e.department_id = d.department_id;
 ```
 
 #### **Paso 6.** Crear procedimiento almacenado
 
 ```sql
 -- Crear procedimiento para añadir empleado
-CREATE OR REPLACE PROCEDURE hr_app_use.add_employee SHARING = METADATA (
+CREATE OR REPLACE PROCEDURE hr_app_user.add_employee SHARING = METADATA (
     p_first_name   IN VARCHAR2,
     p_last_name    IN VARCHAR2,
     p_email        IN VARCHAR2,
@@ -414,7 +414,7 @@ AS
 BEGIN
     -- Obtener configuración de salario máximo
     SELECT TO_NUMBER(config_value) INTO v_max_salary
-    FROM hr_app_use.app_config WHERE config_key = 'MAX_SALARY';
+    FROM hr_app_user.app_config WHERE config_key = 'MAX_SALARY';
 
     -- Validar salario
     IF p_salary > v_max_salary THEN
@@ -422,10 +422,10 @@ BEGIN
     END IF;
 
     -- Generar nuevo ID de empleado
-    SELECT NVL(MAX(employee_id), 0) + 1 INTO v_employee_id FROM hr_app_use.employees_app;
+    SELECT NVL(MAX(employee_id), 0) + 1 INTO v_employee_id FROM     hr_app_user.employees_app;
 
     -- Insertar empleado
-    INSERT INTO hr_app_use.employees_app (
+    INSERT INTO hr_app_user.employees_app (
         employee_id, first_name, last_name, email, hire_date,
         job_id, salary, department_id
     ) VALUES (
