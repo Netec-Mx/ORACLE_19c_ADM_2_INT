@@ -602,7 +602,7 @@ COL object_name FORMAT A30
 COL object_type FORMAT A15
 COL sharing FORMAT A15
 
-SELECT owner, object_name, object_type, sharing, origin_con_id
+SELECT owner, object_name, object_type, sharing
 FROM dba_objects
 WHERE owner = 'HR_APP_USER'
   AND object_name LIKE '%APP%'
