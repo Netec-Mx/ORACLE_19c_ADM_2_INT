@@ -447,9 +447,6 @@ END add_employee;
 #### **Paso 7.** Finalizar instalación de la aplicación
 
 ```sql
--- Reconectar como SYSDBA al Application Root
-CONNECT / AS SYSDBA
-ALTER SESSION SET CONTAINER = app_root;
 
 -- Finalizar instalación de aplicación versión 1.0
 ALTER PLUGGABLE DATABASE APPLICATION hr_app END INSTALL '1.0';
