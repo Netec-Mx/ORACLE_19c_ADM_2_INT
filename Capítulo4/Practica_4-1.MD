@@ -699,7 +699,7 @@ ALTER SESSION SET CONTAINER = app_root;
 CREATE PLUGGABLE DATABASE app_pdb3
   ADMIN USER pdb3_admin IDENTIFIED BY Oracle123_PDB3
   ROLES = (DBA)
-  CREATE_FILE_DEST = '/u01/app/oracle/oradata/CDB1/app_pdb3';
+  CREATE_FILE_DEST = '/u01/app/oracle/oradata/ORCL/app_pdb3';
 ```
 
 #### **Paso 2.** Abrir, guardar estado y sincronizar APP_PDB3
