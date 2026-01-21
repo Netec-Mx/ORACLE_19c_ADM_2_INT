@@ -61,7 +61,7 @@ mkdir -p scripts logs reports exports
 
 #### **Paso 1.** Crear el script SQL
 
-Crea el archivo `/home/oracle/lab_02/scripts/setup_test_data.sql` con el siguiente contenido:
+Crea el archivo `vi /home/oracle/lab_02/scripts/setup_test_data.sql` con el siguiente contenido:
 
 ```sql
 connect / as sysdba
@@ -138,6 +138,7 @@ sqlplus / as sysdba @setup_test_data.sql > ../logs/setup_test_data.log
 #### **Paso 3.** Validar los datos
 
 ```sql
+sqlplus hr_data/Oracle123@localhost:1521/APP_PDB1;
 SELECT COUNT(*) AS employee_count FROM employees;
 SELECT COUNT(*) AS salary_count FROM salaries;
 SELECT COUNT(*) AS high_earners FROM salaries WHERE salary > 100000;
@@ -146,6 +147,8 @@ SELECT COUNT(*) AS high_earners FROM salaries WHERE salary > 100000;
 <br/>
 
 #### **Paso 4.** Crear tablas similares en APP_PDB2
+
+Crea el archivo `vi /home/oracle/lab_02/scripts/setup_test_data2.sql` con el siguiente contenido:
 
 ```sql
 CONNECT / as sysdba
@@ -160,11 +163,50 @@ GRANT CONNECT, RESOURCE TO hr_data;
 
 CONNECT hr_data/Oracle123@localhost:1521/APP_PDB2;
 
-CREATE TABLE employees AS SELECT * FROM hr_data.employees@app_pdb1_link;
-CREATE TABLE salaries  AS SELECT * FROM hr_data.salaries@app_pdb1_link;
-```
+CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    first_name  VARCHAR2(50),
+    last_name   VARCHAR2(50),
+    email       VARCHAR2(100),
+    hire_date   DATE,
+    department  VARCHAR2(50)
+);
 
-> Si no existe el DB Link, crea las tablas manualmente con la misma estructura.
+CREATE TABLE salaries (
+    employee_id NUMBER,
+    salary NUMBER,
+    bonus NUMBER,
+    effective_date DATE,
+    CONSTRAINT fk_emp FOREIGN KEY (employee_id)
+        REFERENCES employees(employee_id)
+);
+
+BEGIN
+  FOR i IN 1..500 LOOP
+    INSERT INTO employees VALUES (
+      i, 'FirstName'||i, 'LastName'||i,
+      'employee'||i||'@company.com',
+      SYSDATE - DBMS_RANDOM.VALUE(1,3650),
+      CASE MOD(i,5)
+        WHEN 0 THEN 'IT'
+        WHEN 1 THEN 'HR'
+        WHEN 2 THEN 'Finance'
+        WHEN 3 THEN 'Sales'
+        ELSE 'Operations'
+      END
+    );
+
+    INSERT INTO salaries VALUES (
+      i,
+      ROUND(DBMS_RANDOM.VALUE(40000,200000),2),
+      ROUND(DBMS_RANDOM.VALUE(0,50000),2),
+      SYSDATE - DBMS_RANDOM.VALUE(1,365)
+    );
+  END LOOP;
+  COMMIT;
+END;
+/
+```
 
 <br/><br/>
 
@@ -175,7 +217,7 @@ CREATE TABLE salaries  AS SELECT * FROM hr_data.salaries@app_pdb1_link;
 #### **Paso 1.** Verificar el modo actual
 
 ```sql
-connect / as sysdba
+sqlplus / as sysdba
 
 SET LINESIZE 200
 SET PAGESIZE 100
@@ -207,10 +249,9 @@ WHERE banner LIKE 'Oracle%';
 
 ```bash
 # 1. Detener la base
-sqlplus / as sysdba << EOF
+
 SHUTDOWN IMMEDIATE;
 EXIT;
-EOF
 
 # 2. Relink con Unified Auditing
 cd $ORACLE_HOME/rdbms/lib
@@ -220,10 +261,9 @@ make -f ins_rdbms.mk uniaud_on ioracle
 echo "Resultado del relink: $?"
 
 # 3. Iniciar nuevamente la base
-sqlplus / as sysdba << EOF
+sqlplus / as sysdba
 STARTUP;
 EXIT;
-EOF
 ```
 
 <br/><br/>
@@ -231,7 +271,7 @@ EOF
 #### **Paso 3.** Verificación post-relink
 
 ```sql
-connect / as sysdba
+sqlplus / as sysdba
 
 SELECT parameter, value
 FROM v$option
@@ -250,7 +290,6 @@ ORDER BY policy_name;
 <br/><br/>
 
 
-
 ### Tarea 4. Generar reportes desde UNIFIED_AUDIT_TRAIL
 
 #### **Paso 1.** Crear política de auditoría
@@ -259,21 +298,31 @@ ORDER BY policy_name;
 CONNECT / AS SYSDBA
 ALTER SESSION SET CONTAINER = APP_PDB1;
 
-BEGIN
-  DBMS_AUDIT_MGMT.CREATE_AUDIT_POLICY(
-    audit_policy_name => 'AUD_HR_SALARY_DML',
-    audit_condition   => 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') <> ''HR_DATA''',
-    audit_trail       => DBMS_AUDIT_MGMT.AUDIT_TRAIL_UNIFIED
-  );
-END;
-/
+-- Conectado al Application Root
+CREATE AUDIT POLICY AUD_HR_OWNER_CHANGES
+ ACTIONS INSERT, UPDATE, DELETE ON HR_DATA.SALARIES
+ WHEN 'SYS_CONTEXT(''USERENV'',''SESSION_USER'') = ''HR_DATA'''
+ EVALUATE PER STATEMENT;
 
-AUDIT INSERT, UPDATE, DELETE ON hr_data.salaries BY ACCESS;
-AUDIT SELECT ON hr_data.salaries BY ACCESS;
+-- Habilitar la politica
+AUDIT POLICY AUD_HR_OWNER_CHANGES;
 
-SELECT policy_name, enabled_opt, user_name
+-- Verificar que la politica fue creada
+SELECT policy_name, 
+       audit_condition, 
+       audit_trail, 
+       common
+FROM audit_unified_policies
+WHERE policy_name = 'AUD_HR_OWNER_CHANGES';
+
+-- Verificar que la politica fue habilitada
+SELECT policy_name, 
+       enabled_opt,  -- Debería decir 'BY'
+       user_name,    -- Si dice 'ALL USERS', aplica a todos
+       success,      -- ¿Audita cuando la operación sale bien? (YES/NO)
+       failure       -- ¿Audita cuando la operación falla? (YES/NO)
 FROM audit_unified_enabled_policies
-ORDER BY policy_name;
+WHERE policy_name = 'AUD_HR_OWNER_CHANGES';
 ```
 
 <br/><br/>
