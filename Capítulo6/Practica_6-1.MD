@@ -1,4 +1,4 @@
-# Práctica 6.1. Recuperación de una PDB usando Flashback Database
+# Práctica 6.1. Recuperación de una tabla de una PDB usando Flashback Database
 
 <br/><br/>
 
@@ -152,16 +152,7 @@ SHOW CON_NAME;
 
 <br/>
 
-#### **Paso 2.** Obtener el SCN actual
-
-```sql
-SELECT CURRENT_SCN FROM V$DATABASE;
--- Guardar este valor como <SCN_ANTERIOR>
-```
-
-<br/>
-
-#### **Paso 3.** Crear objeto que será eliminado
+#### **Paso 2.** Crear objeto que será eliminado
 
 ```sql
 CREATE TABLE DATOS_PERDIDOS (
@@ -176,13 +167,23 @@ COMMIT;
 
 <br/>
 
-#### **Paso 4.** Verificar la creación de los datos
+#### **Paso 3.** Verificar la creación de los datos
 
 ```sql
 SELECT * FROM DATOS_PERDIDOS;
 ```
 
 <br/><br/>
+
+#### **Paso 4.** Obtener el SCN actual
+
+```sql
+SELECT CURRENT_SCN FROM V$DATABASE;
+-- Guardar este valor como <SCN_ANTERIOR>
+```
+
+<br/>
+
 
 ### Tarea 3. Simular la pérdida de datos
 
