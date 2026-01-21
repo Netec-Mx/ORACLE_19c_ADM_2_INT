@@ -316,7 +316,7 @@ WHERE policy_name = 'AUD_HR_OWNER_CHANGES';
 
 -- Verificar que la politica fue habilitada
 SELECT policy_name, 
-       enabled_opt,  -- Debería decir 'BY'
+       enabled_option,  -- Debería decir 'BY'
        entity_name,    -- Si dice 'ALL USERS', aplica a todos
        success,      -- ¿Audita cuando la operación sale bien? (YES/NO)
        failure       -- ¿Audita cuando la operación falla? (YES/NO)
