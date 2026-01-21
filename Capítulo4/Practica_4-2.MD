@@ -142,6 +142,7 @@ sqlplus hr_data/Oracle123@localhost:1521/APP_PDB1;
 SELECT COUNT(*) AS employee_count FROM employees;
 SELECT COUNT(*) AS salary_count FROM salaries;
 SELECT COUNT(*) AS high_earners FROM salaries WHERE salary > 100000;
+EXIT;
 ```
 
 <br/>
@@ -211,7 +212,6 @@ END;
 <br/><br/>
 
 
-
 ### Tarea 3. Verificar y habilitar Unified Auditing
 
 #### **Paso 1.** Verificar el modo actual
@@ -248,7 +248,7 @@ WHERE banner LIKE 'Oracle%';
 > **Nota:** Este proceso requiere reiniciar la base de datos. Planifica una ventana de mantenimiento.
 
 ```bash
-# 1. Detener la base
+# 1. Detener la base de datos
 
 SHUTDOWN IMMEDIATE;
 EXIT;
@@ -398,5 +398,3 @@ DROP AUDIT POLICY AUD_HR_OWNER_CHANGES;
 <br/><br/>
 
 > **Nota:** Los conteos, tamaños y tiempos pueden variar según el entorno del curso, pero los resultados deben mostrar Unified Auditing activo y eventos registrados en `UNIFIED_AUDIT_TRAIL`.
-
-
