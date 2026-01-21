@@ -309,8 +309,7 @@ AUDIT POLICY AUD_HR_OWNER_CHANGES;
 
 -- Verificar que la politica fue creada
 SELECT policy_name, 
-       audit_condition, 
-       audit_trail, 
+       audit_condition,
        common
 FROM audit_unified_policies
 WHERE policy_name = 'AUD_HR_OWNER_CHANGES';
@@ -318,7 +317,7 @@ WHERE policy_name = 'AUD_HR_OWNER_CHANGES';
 -- Verificar que la politica fue habilitada
 SELECT policy_name, 
        enabled_opt,  -- Debería decir 'BY'
-       user_name,    -- Si dice 'ALL USERS', aplica a todos
+       entity_name,    -- Si dice 'ALL USERS', aplica a todos
        success,      -- ¿Audita cuando la operación sale bien? (YES/NO)
        failure       -- ¿Audita cuando la operación falla? (YES/NO)
 FROM audit_unified_enabled_policies
