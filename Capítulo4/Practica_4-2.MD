@@ -342,7 +342,7 @@ EXIT
 #### **Paso 3.** Generar reportes
 
 ```sql
-SQLPLUS / AS SYSDBA
+sqlplus / as sysdba
 ALTER SESSION SET CONTAINER = APP_PDB1;
 
 SET LINES 200 PAGES 200 TRIMSPOOL ON
