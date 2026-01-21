@@ -335,6 +335,7 @@ CONNECT hr_data/Oracle123@localhost:1521/APP_PDB1
 SELECT COUNT(*) FROM salaries WHERE salary > 150000;
 UPDATE salaries SET bonus = NVL(bonus,0) + 1000 WHERE salary > 180000;
 COMMIT;
+EXIT
 ```
 
 <br/><br/>
@@ -342,21 +343,25 @@ COMMIT;
 #### **Paso 3.** Generar reportes
 
 ```sql
-CONNECT / AS SYSDBA
+SQLPLUS / AS SYSDBA
 ALTER SESSION SET CONTAINER = APP_PDB1;
 
 SET LINES 200 PAGES 200 TRIMSPOOL ON
 SPOOL /home/oracle/lab_02/reports/audit_resumen_por_accion.txt
 
-SELECT action_name, object_schema, object_name, COUNT(*) AS total
-FROM   UNIFIED_AUDIT_TRAIL
-WHERE  object_schema = 'HR_DATA'
-AND    object_name = 'SALARIES'
-AND    event_timestamp > SYSTIMESTAMP - INTERVAL '1' HOUR
-GROUP  BY action_name, object_schema, object_name
-ORDER  BY total DESC;
+SELECT 
+    event_timestamp, 
+    dbusername, 
+    action_name, 
+    object_schema, 
+    object_name, 
+    sql_text
+FROM UNIFIED_AUDIT_TRAIL 
+WHERE unified_audit_policies = 'AUD_HR_OWNER_CHANGES'
+ORDER BY event_timestamp DESC;
 
 SPOOL OFF;
+EXIT
 ```
 
 <br/><br/>
@@ -364,27 +369,16 @@ SPOOL OFF;
 #### **Paso 4.** Limpieza (Opcional)
 
 ```sql
-NOAUDIT INSERT, UPDATE, DELETE ON hr_data.salaries;
-NOAUDIT SELECT ON hr_data.salaries;
-
-BEGIN
-  DBMS_AUDIT_MGMT.DROP_AUDIT_POLICY('AUD_HR_SALARY_DML');
-END;
-/
+NOAUDIT POLICY AUD_HR_OWNER_CHANGES;
+DROP AUDIT POLICY AUD_HR_OWNER_CHANGES;
 ```
 
 <br/>
 
 > **Nota de validación por contenedor:**
-> Todas las auditorías de esta práctica se ejecutan dentro de **APP_PDB1**, donde se crea el usuario `HR_DATA` y la política `AUD_HR_SALARY_DML`.
+> Todas las auditorías de esta práctica se ejecutan dentro de **APP_PDB1**, donde se crea el usuario `HR_DATA` y la política `AUD_HR_OWNER_CHANGES`.
 > En **APP_PDB2** solo existen las tablas de prueba sin auditoría habilitada.
 > Si consultas desde el CDB raíz, puedes identificar el origen de los registros por el campo `CON_ID` en `CDB_UNIFIED_AUDIT_TRAIL`.
-
-```sql
-SELECT event_timestamp, dbusername, object_schema, object_name, con_id
-FROM   cdb_unified_audit_trail
-WHERE  con_id = (SELECT con_id FROM v$pdbs WHERE name='APP_PDB1');
-```
 
 <br/><br/>
 
@@ -396,7 +390,7 @@ WHERE  con_id = (SELECT con_id FROM v$pdbs WHERE name='APP_PDB1');
 | ------------------------- | ---------------------------------------------------------------- |
 | Unified Auditing activado | `TRUE` en `V$OPTION`                                             |
 | Modo de auditoría         | `PURE MODE`                                                      |
-| Políticas activas         | Políticas `ORA_*` y `AUD_HR_SALARY_DML`                          |
+| Políticas activas         | Políticas `ORA_*` y `AUD_HR_OWNER_CHANGES`                          |
 | Datos de prueba           | 500 registros en `EMPLOYEES` y `SALARIES`                        |
 | Reportes generados        | Archivos en `/home/oracle/lab_02/reports/` con resumen y detalle |
 | Contenedor de auditoría   | APP_PDB1 (`CON_ID` correspondiente en `CDB_UNIFIED_AUDIT_TRAIL`) |
