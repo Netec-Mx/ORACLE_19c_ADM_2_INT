@@ -281,7 +281,7 @@ WHERE parameter = 'Unified Auditing';
 COLUMN policy_name FORMAT A30
 COLUMN enabled_opt FORMAT A15
 
-SELECT policy_name, enabled_opt, user_name
+SELECT policy_name, enabled_option
 FROM audit_unified_enabled_policies
 WHERE policy_name LIKE 'ORA%'
 ORDER BY policy_name;
