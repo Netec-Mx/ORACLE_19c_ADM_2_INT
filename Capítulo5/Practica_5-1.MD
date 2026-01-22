@@ -102,7 +102,7 @@ Crear la PDB de nombre PDB_VENTAS, definir un usuario local dentro de ella y val
 SHOW PDBS
 
 CREATE PLUGGABLE DATABASE pdb_ventas 
-ADMIN USER pdb_admin IDENTIFIED BY Oracle_2025
+ADMIN USER pdb_admin IDENTIFIED BY Oracle123
 FILE_NAME_CONVERT=('/pdbseed/','/pdb_ventas/');
 
 -- Debería aparecer PDB_VENTAS en la lista
@@ -146,7 +146,7 @@ PDB_VENTAS =
     (ADDRESS = (PROTOCOL = TCP)(HOST = localhost.localdomain)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
-      (SERVICE_NAME = PDB_VENTAS)    
+      (SERVICE_NAME = pdb_ventas)    
     )
   )
 ```
@@ -166,7 +166,7 @@ ALTER SESSION SET CONTAINER = PDB_VENTAS;
 -- Debe mostrar PDB_VENTAS
 SHOW CON_NAME;  
 
-CREATE USER USER_VENTAS IDENTIFIED BY Oracle_2025;
+CREATE USER USER_VENTAS IDENTIFIED BY Oracle123;
 GRANT CREATE SESSION, CREATE TABLE TO USER_VENTAS;
 -- GRANT ALTER SYSTEM TO USER_VENTAS;    
 
@@ -177,7 +177,7 @@ GRANT CREATE SESSION, CREATE TABLE TO USER_VENTAS;
 #### **Paso 4.** Crear tabla local de prueba    
 
 ```sql
-CONNECT USER_VENTAS/Oracle_2025@PDB_VENTAS;
+CONNECT USER_VENTAS/Oracle123@PDB_VENTAS;
 
 SHOW CON_NAME
 
