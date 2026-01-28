@@ -10,5 +10,4 @@ Esta práctica guía al participante a través del ciclo completo de diagnóstic
  
 [Práctica 7.1](Practica_7-1.MD)
  
-
  
