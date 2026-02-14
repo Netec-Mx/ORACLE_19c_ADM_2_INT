@@ -32,7 +32,6 @@
 | `V$INSTANCE`                        | Proporciona información de la instancia actual: nombre, host, versión y estado.                                      | [Oracle Docs – V$INSTANCE](https://docs.oracle.com/en/database/oracle/oracle-database/21/refrn/V-INSTANCE.html)                                                                                               |
 
 
-
 <br/><br/>
 
 ## Objetivo visual 
