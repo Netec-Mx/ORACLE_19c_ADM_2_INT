@@ -1,5 +1,4 @@
 # Práctica 1.1 Creación de CDB y PDB regulares 
-
 <br/><br/>
 
 ## Objetivos
