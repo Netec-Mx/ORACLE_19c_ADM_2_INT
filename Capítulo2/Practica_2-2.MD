@@ -23,6 +23,7 @@
 
 * CDB 19c con ≥1 PDB abierta; listener activo; usuario `oracle`; privilegios `SYSDBA`.
 * `ORACLE_HOME`/`ORACLE_SID` configurados; SQL*Plus, lsnrctl, tnsping disponibles.
+* Cambiar el password del usuario sys y system a: oracle_4U 
 
 <br/><br/>
 
@@ -56,8 +57,12 @@ lsnrctl start LISTENER
 ```
 
 ```sql
--- Verificar las CDB y PDBs
+-- Cambiar el password de sys y systema a: oracle_4U
 sqlplus / as sysdba
+alter user sys identified by oracle_4U;
+alter user system identified by oracle_4U;
+
+-- Verificar las CDB y PDBs
 SELECT name,open_mode,cdb FROM v$database;
 SELECT con_id,name,open_mode FROM v$pdbs ORDER BY con_id;
 ```
