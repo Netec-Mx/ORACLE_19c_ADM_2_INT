@@ -89,8 +89,9 @@ lsnrctl services LISTENER | grep 'Service "' | awk '{print $2}' | tr -d '"'
 ### Tarea 3. Servicios registrados/activos (diccionario)
 
 ```sql
--- Registrados
-SQLPLUS / AS SYSDBA
+-- Servicios Registrados
+sqlplus / as sysdba
+
 SET LINES 180
 COL name         FORMAT A30 
 COL network_name FORMAT A40
@@ -98,7 +99,7 @@ SELECT con_id,name,network_name
 FROM   v$services
 ORDER  BY 1,2;
 
--- Activos  
+-- Servicios Activos  
 SET LINES 180
 COL pdb_name     FORMAT A20 
 COL service_name FORMAT A30
