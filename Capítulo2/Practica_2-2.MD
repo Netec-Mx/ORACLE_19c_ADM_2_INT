@@ -57,7 +57,7 @@ lsnrctl start LISTENER
 ```
 
 ```sql
--- Cambiar el password de sys y systema a: oracle_4U
+-- Cambiar el password de sys y system a: oracle_4U
 sqlplus / as sysdba
 alter user sys identified by oracle_4U;
 alter user system identified by oracle_4U;
