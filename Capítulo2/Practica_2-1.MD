@@ -69,7 +69,7 @@ COL name FORMAT A30
 SELECT name, cdb, open_mode, database_role FROM v$database;
 SELECT con_id, name, open_mode FROM v$pdbs ORDER BY con_id;
 -- Si alguna PDB no está en READ WRITE ejecutar la sentencia:
--- ALTER PLUGGABLE DATABASE ALL OPEN;
+ALTER PLUGGABLE DATABASE ALL OPEN;
 QUIT
 ```
 
