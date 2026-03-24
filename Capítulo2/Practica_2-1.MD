@@ -61,6 +61,9 @@ ps -ef | grep tnslsnr | grep -v grep
 
 ```sql
 -- CDB y PDBs
+# En la cuenta sys del contenedor dar los siguientes comandos
+sqlplus / as sysdba
+
 SET LINES 180
 COL name FORMAT A30
 SELECT name, cdb, open_mode, database_role FROM v$database;
