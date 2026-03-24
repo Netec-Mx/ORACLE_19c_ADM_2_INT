@@ -64,6 +64,10 @@
    ```sql
    SQLPLUS / AS SYSDBA
    SELECT name, cdb, open_mode FROM v$database;
+
+   # Para realizar las futuras prácticas, cambia el password de sys a oracle_4U
+   alter user sys identified by oracle_4U;
+
    ```
 sel
    *Esperado:* `CDB=YES`, `OPEN_MODE=READ WRITE`.
