@@ -35,7 +35,7 @@
 **Requisitos del entorno**
 
 * Oracle Database 19c con CDB funcional
-* Mínimo 3 PDBs creadas y disponibles
+* Tener mínimo 3 PDBs de aplicación creadas  y disponibles
 * Usuario con privilegios SYSDBA
 * Variables `$ORACLE_HOME` y `$ORACLE_SID` configuradas
 
@@ -83,7 +83,7 @@ COL INSTANCE_NAME FORMAT A30
 SELECT * FROM cdb_pdb_saved_states;
 ```
 
-Si hay menos de 3 PDBs, crea las necesarias:
+Crea las siguientes PDBs de aplicación:
 
 ```sql
 CREATE PLUGGABLE DATABASE pdb_prod ADMIN USER pdb_admin IDENTIFIED BY Oracle_2024 FILE_NAME_CONVERT=('/pdbseed/','/pdb_prod/');
