@@ -179,6 +179,7 @@ CREATE RESTORE POINT before_lab  GUARANTEE FLASHBACK DATABASE;
 SELECT name, scn, time, guarantee_flashback_database
 FROM v$restore_point
 WHERE name = 'BEFORE_LAB';
+EXIT
 ```
 
 <br/><br/>
