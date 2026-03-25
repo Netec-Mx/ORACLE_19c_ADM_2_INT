@@ -137,6 +137,7 @@ PROMPT
 PROMPT ============================================
 PROMPT  VALIDACIÓN COMPLETADA
 PROMPT ============================================
+EXIT
 ```
 
 <br/><br/>
