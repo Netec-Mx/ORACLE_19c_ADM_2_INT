@@ -77,8 +77,8 @@ Se valida que la base de datos cumple con los prerrequisitos para trabajar con A
 #### **Paso 1.** Validación de prerrequisitos
 
 ```bash
-# Conectarse como usuario oracle
-su - oracle
+# Verificar que este conectado como usuario oracle
+id
 
 # Conectar como SYSDBA
 sqlplus / as sysdba
@@ -169,8 +169,8 @@ EXIT
 #### **Paso 2.** Crear punto de restauración garantizado
 
 ```sql
--- Conectar al CDB como SYSDBA
-CONNECT / AS SYSDBA
+-- Conectarse al CDB como SYSDBA
+sqlplus / as sysdba
 
 -- Crear punto de restauración garantizado
 CREATE RESTORE POINT before_lab  GUARANTEE FLASHBACK DATABASE;
