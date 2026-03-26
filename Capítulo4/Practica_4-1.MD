@@ -862,6 +862,8 @@ COL app_name FORMAT A15
 COL app_version FORMAT A12
 COL app_version_comment FORMAT A40
 
+ALTER SESSION SET CONTAINER=APP_ROOT;
+
 SELECT app_name, app_version, app_version_comment
 FROM dba_app_versions
 WHERE app_name = 'HR_APP'
