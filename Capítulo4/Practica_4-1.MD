@@ -874,13 +874,11 @@ FROM dba_app_versions;
 -- Verificar estado de sincronización en cada Application PDB
 COL pdb_name FORMAT A15
 COL app_name FORMAT A15
-COL app_statement FORMAT A20
 COL app_status FORMAT A15
 
 SELECT
     p.pdb_name,
     s.app_name,
-    s.app_statement,
     s.app_status
 FROM dba_app_pdb_status s
 JOIN dba_pdbs p ON s.con_uid = p.con_uid
