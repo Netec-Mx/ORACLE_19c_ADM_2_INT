@@ -1002,7 +1002,7 @@ END;
 /
 ```
 
-<br/><br/>
+<br/><br/> 
 
 ### Tarea 13. Crear Tabla de Auditoría de Configuración
 
