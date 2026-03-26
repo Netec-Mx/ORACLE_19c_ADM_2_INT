@@ -499,7 +499,7 @@ Se valida la existencia del Application Seed (`APP_ROOT$SEED`). Esta PDB especia
 show pdbs
 
 -- Si no existe crearla desde el contenedor APP_ROOT
-ALTER SESSION SER CONTAINER=APP_ROOT;
+ALTER SESSION SET CONTAINER=APP_ROOT;
 CREATE PLUGGABLE DATABASE AS SEED ADMIN USER admin_seed IDENTIFIED BY oracle_4U;
 ```
 
