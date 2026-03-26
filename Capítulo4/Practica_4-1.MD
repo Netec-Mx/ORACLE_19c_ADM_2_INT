@@ -193,8 +193,8 @@ Se comprueba que el **CDB y sus PDBs** estén operativos, revisando su estado me
 #### **Paso 1.** Conectar al CDB y listar contenedores
 
 ```sql
--- Conectar al CDB$ROOT
-CONNECT / AS SYSDBA
+-- Conectarse al CDB$ROOT como usuario sys
+sqlplus / as sysdba
 
 -- Verificar contenedor actual
 SHOW CON_NAME
