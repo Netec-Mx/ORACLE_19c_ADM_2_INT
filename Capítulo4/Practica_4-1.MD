@@ -286,7 +286,7 @@ SHOW user;
 
 <br/><br/>
 
-### Tarea 4. Conectar al Application Root e Instalar la Aplicación Base
+### Tarea 4. Conectar al Application Root e Instalar la Aplicación Base 
 
 Se cambia el contexto a **APP_ROOT** (`ALTER SESSION SET CONTAINER=app_root`) y se instala una aplicación base llamada **HR_APP v1.0** mediante el ciclo `BEGIN INSTALL` / `END INSTALL`. Durante la instalación, se crea el usuario común `HR_APP_USER`, las tablas de empleados, departamentos y configuración, la vista `EMP_DEPT_VIEW`, y el procedimiento `ADD_EMPLOYEE`. Todos los objetos se crean con `SHARING = METADATA` para que su definición se sincronice automáticamente hacia las Application PDBs, pero no sus datos.
 
