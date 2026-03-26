@@ -971,36 +971,6 @@ GROUP BY con_id, owner, object_type
 ORDER BY con_id, object_type;
 ```
 
-#### **Paso 6.** Verificar conteo de datos en cada Application PDB
-
-```sql
--- Crear script para verificar conteo de datos en cada PDB
-SET SERVEROUTPUT ON
-DECLARE
-    v_count NUMBER;
-    v_pdb_name VARCHAR2(30);
-BEGIN
-    FOR pdb IN (SELECT name, con_id FROM v$containers WHERE application_pdb = 'YES' ORDER BY name) LOOP
-        v_pdb_name := pdb.name;
-
-        -- Contar empleados
-        EXECUTE IMMEDIATE 'ALTER SESSION SET CONTAINER = ' || v_pdb_name;
-        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM hr_app_user.employees_app' INTO v_count;
-        DBMS_OUTPUT.PUT_LINE(v_pdb_name || ' - Employees: ' || v_count);
-
-        -- Contar departamentos
-        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM hr_app_user.departments_app' INTO v_count;
-        DBMS_OUTPUT.PUT_LINE(v_pdb_name || ' - Departments: ' || v_count);
-
-        DBMS_OUTPUT.PUT_LINE('---');
-    END LOOP;
-
-    -- Volver a CDB$ROOT
-    EXECUTE IMMEDIATE 'ALTER SESSION SET CONTAINER = CDB$ROOT';
-END;
-/
-```
-
 <br/><br/> 
 
 ### Tarea 13. Crear Tabla de Auditoría de Configuración
