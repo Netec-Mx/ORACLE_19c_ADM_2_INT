@@ -487,7 +487,7 @@ ORDER BY object_type, object_name;
 
 ### Tarea 5. Crear Application Seed (Opcional pero Recomendado)
 
-Se valida la existencia del Application Seed (`APP_ROOT$SEED`) que Oracle genera automáticamente al crear el Application Root. Esta PDB especial funciona como **plantilla base** para crear Application PDBs derivadas. En caso de estar cerrada, se abre con `ALTER PLUGGABLE DATABASE app_root$seed OPEN`. 
+Se valida la existencia del Application Seed (`APP_ROOT$SEED`). Esta PDB especial funciona como **plantilla base** para crear Application PDBs derivadas. En caso de estar cerrada, se abre con `ALTER PLUGGABLE DATABASE app_root$seed OPEN`. 
 
 <br/><br/>
 
@@ -496,14 +496,12 @@ Se valida la existencia del Application Seed (`APP_ROOT$SEED`) que Oracle genera
 ```sql
 
 -- Verificar si existe Application Seed
-SELECT con_id, name, open_mode, application_seed
-FROM v$containers
-WHERE application_seed = 'YES'
-  AND con_id IN (SELECT con_id FROM v$containers START WITH name = 'APP_ROOT' CONNECT BY PRIOR con_id = con_id);
+show pdbs
+
+-- Si no existe crearla desde el contenedor APP_ROOT
+ALTER SESSION SER CONTAINER=APP_ROOT;
+CREATE PLUGGABLE DATABASE AS SEED ADMIN USER admin_seed IDENTIFIED BY oracle_4U;
 ```
-
-**Nota:** Oracle crea automáticamente un Application Seed llamado **APP_ROOT$SEED** cuando creas el Application Root. No necesitas crearlo manualmente a menos que quieras personalizarlo.
-
 
 #### **Paso 2.** Abrir el Application Seed (si está cerrado)
 
