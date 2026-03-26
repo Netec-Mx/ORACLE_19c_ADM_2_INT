@@ -865,10 +865,7 @@ COL app_version_comment FORMAT A40
 ALTER SESSION SET CONTAINER=APP_ROOT;
 
 SELECT app_name, app_version, app_version_comment
-FROM dba_app_versions
-WHERE app_name = 'HR_APP'
-ORDER BY app_version;
-```
+FROM dba_app_versions;
 
 #### **Paso 3.** Estado de sincronización detallado por PDB
 
