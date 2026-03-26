@@ -866,6 +866,7 @@ ALTER SESSION SET CONTAINER=APP_ROOT;
 
 SELECT app_name, app_version, app_version_comment
 FROM dba_app_versions;
+```
 
 #### **Paso 3.** Estado de sincronización detallado por PDB
 
