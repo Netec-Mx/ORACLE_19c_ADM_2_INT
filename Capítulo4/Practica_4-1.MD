@@ -886,7 +886,7 @@ FROM dba_app_pdb_status s
 JOIN dba_pdbs p ON s.con_uid = p.con_uid
 WHERE s.app_name = 'HR_APP'
 ORDER BY p.pdb_name;
-```
+``` 
 
 <br/><br/>
 
