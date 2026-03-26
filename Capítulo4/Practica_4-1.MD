@@ -990,7 +990,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE(v_pdb_name || ' - Employees: ' || v_count);
 
         -- Contar departamentos
-        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM c##hr_app_user.departments_app' INTO v_count;
+        EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM hr_app_user.departments_app' INTO v_count;
         DBMS_OUTPUT.PUT_LINE(v_pdb_name || ' - Departments: ' || v_count);
 
         DBMS_OUTPUT.PUT_LINE('---');
