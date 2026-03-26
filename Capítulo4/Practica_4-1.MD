@@ -1098,7 +1098,6 @@ COL app_statement FORMAT A15
 SELECT
     p.pdb_name,
     s.app_name,
-    s.app_statement,
     s.app_status
 FROM dba_app_pdb_status s
 JOIN dba_pdbs p ON s.con_uid = p.con_uid
