@@ -234,7 +234,7 @@ ALTER SYSTEM SET db_create_file_dest='/u01/app/oracle/oradata' SCOPE=BOTH;
 SHOW PARAMETER db_create_file_dest;
 ```
 
-<br/><br/>
+<br/><br/> 
 
 ### Tarea 3. Crear el Application Container Root
 
