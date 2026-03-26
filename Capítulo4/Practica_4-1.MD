@@ -256,7 +256,7 @@ CREATE PLUGGABLE DATABASE app_root AS APPLICATION CONTAINER
 SHOW PDBS;
 ```
 
-#### **Paso 2.** Abrir `APP_ROOT` en READ WRITE
+#### **Paso 2.** Abrir `APP_ROOT` en READ WRITE 
 
 ```sql
 -- Abrir APP_ROOT
