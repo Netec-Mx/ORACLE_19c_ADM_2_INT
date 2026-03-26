@@ -659,6 +659,9 @@ ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC;
 CREATE TABLESPACE USERS DATAFILE SIZE 100M 
 AUTOEXTEND ON NEXT 10M MAXSIZE 2G;
 
+-- Volver a sincronizar con la aplicación
+ALTER PLUGGABLE DATABASE APPLICATION hr_app SYNC;
+
 -- Verificar sincronización
 SELECT app_name, app_version, app_status
 FROM dba_applications
