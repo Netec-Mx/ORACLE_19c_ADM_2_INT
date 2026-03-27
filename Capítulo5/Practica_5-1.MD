@@ -276,7 +276,7 @@ Conectarse como usuario local a la PDB y verificar que los comandos restringidos
 #### **Paso 1.** Conectarse como usuario local
 
 ```sql
-CONNECT USER_VENTAS/Oracle_2025@PDB_VENTAS;
+CONNECT USER_VENTAS/Oracle123@PDB_VENTAS;
 
 -- Debe mostrar PDB_VENTAS
 SHOW CON_NAME
