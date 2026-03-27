@@ -209,7 +209,6 @@ En esta tarea revertirás completamente la PDB al estado previo utilizando **FLA
 ```sql
 CONNECT / AS SYSDBA;
 
-ALTER SESSION SET CONTAINER = CDB$ROOT;
 ```
 
 > **Nota:** Todas las operaciones de *Flashback Database* y *Flashback PDB* deben ejecutarse desde **CDB$ROOT** con privilegios SYS o SYSDBA. La recuperación siempre se controla desde el contenedor raíz, incluso si el objetivo es una PDB específica.
