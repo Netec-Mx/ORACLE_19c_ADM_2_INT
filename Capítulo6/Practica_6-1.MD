@@ -135,8 +135,6 @@ En esta tarea capturarás el **SCN actual** de la PDB, el cual servirá como pun
 ```sql
 CONNECT sys/oracle_4U@PDB_HR AS SYSDBA;
 
-ALTER SESSION SET CONTAINER = PDB_HR;
-
 SHOW CON_NAME;
 -- Debe mostrar PDB_HR
 ```
