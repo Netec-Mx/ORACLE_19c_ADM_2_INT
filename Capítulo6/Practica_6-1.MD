@@ -62,21 +62,21 @@ En esta tarea habilitarás la funcionalidad Flashback Database en la CDB, establ
 #### **Paso 1.** Conectarse al contenedor raíz
 
 ```sql
-CONNECT / AS SYSDBA;
-
--- o con:
-
-ALTER SESSION SET CONTAINER = CDB$ROOT;
+sqlplus / AS SYSDBA;
 
 SHOW CON_NAME; 
 -- Debe mostrar CDB$ROOT
 ```
 
-<br/>
+<br/><br/>
 
-#### **Paso 2.** Configurar la retención de flashback
+#### **Paso 2.** Verificar y configurar la retención de flashback
 
 ```sql
+-- Verifica que el mecanismo de FLASHBACK este habilitado
+SELECT flashback_on FROM v$database;
+
+-- Si esta habilitado configura el tiempo de retención
 ALTER SYSTEM SET DB_FLASHBACK_RETENTION_TARGET=60 SCOPE=BOTH;
 ```
 
@@ -84,7 +84,7 @@ ALTER SYSTEM SET DB_FLASHBACK_RETENTION_TARGET=60 SCOPE=BOTH;
 
 <br/>
 
-#### **Paso 3.** Apagar y montar la CDB
+#### **Paso 3.** (Opcional) En el caso que en el paso 2 no haya estado habilidado el FLASHBACK, sigue las siguientes instrucciones
 
 ```sql
 SHUTDOWN IMMEDIATE;
@@ -93,7 +93,7 @@ STARTUP MOUNT;
 
 <br/>
 
-#### **Paso 4.** Habilitar Flashback Database
+#### **Paso 4.** (Opcional) Habilitar Flashback Database
 
 ```sql
 ALTER DATABASE FLASHBACK ON;
@@ -104,7 +104,7 @@ ALTER DATABASE FLASHBACK ON;
 
 <br/>
 
-#### **Paso 5.** Abrir la CDB y la PDB objetivo
+#### **Paso 5.** (Opcional) Abrir la CDB y la PDB objetivo
 
 ```sql
 ALTER DATABASE OPEN;
@@ -117,7 +117,7 @@ SHOW PDBS;
 ```
 
 
-#### **Paso 6.** Registrar la PDB_HR en *tnsnames.ora*
+#### **Paso 6.** En el laboratorio 5 se creo la BD PDB_HR, registrar la PDB_HR en el archivo *tnsnames.ora*
 
 Edita el archivo **tnsnames.ora** y agrega (o verifica) la entrada correspondiente a **PDB_HR**, asegurándote de usar el *SERVICE_NAME* correcto. Luego guarda los cambios y valida la conexión con SQL*Plus.
 
