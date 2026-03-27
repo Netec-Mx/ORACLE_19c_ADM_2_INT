@@ -169,7 +169,9 @@ GRANT CREATE SESSION, CREATE TABLE TO USER_VENTAS;
 
 > **Nota**: En un entorno real no se recomienda otorgar `ALTER SYSTEM` a usuarios locales. Aquí se hace solo con fines didácticos, para demostrar el efecto del Lockdown Profile
 
-#### **Paso 4.** Crear tabla local de prueba    
+#### **Paso 4.** Crear tabla local de prueba
+
+CONNECT USER_VENTAS/Oracle123@PDB_VENTAS;
 
 ```sql
 SHOW CON_NAME
@@ -195,7 +197,6 @@ COL TABLE_NAME FORMAT A30
 SELECT TABLE_NAME 
 FROM DBA_TABLES 
 WHERE OWNER = 'USER_VENTAS';
-
 
 SELECT TABLE_NAME, CON_ID
 FROM CDB_TABLES
