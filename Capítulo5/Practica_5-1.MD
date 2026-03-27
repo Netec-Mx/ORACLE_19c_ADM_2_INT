@@ -49,7 +49,6 @@ Crear un usuario común con privilegios globales que pueda autenticarse y consul
 ```bash
 . oraenv   # orcl
 sqlplus / AS SYSDBA
-
 SHOW USER
 ```
 
@@ -110,7 +109,6 @@ SHOW PDBS
 
 -- Deja la base de datos en modo READ & WRITE
 ALTER PLUGGABLE DATABASE PDB_VENTAS OPEN READ WRITE;
-
 SHOW PDBS
 
 ALTER SESSION SET CONTAINER = PDB_VENTAS;
@@ -122,7 +120,7 @@ SHOW CON_NAME;
 SHOW PARAMETER service_names;
 ```
 
-#### **Paso 2.** (Opcional) Ajustar la entrada de `PDB_VENTAS` en `tnsnames.ora`
+#### **Paso 2.** Ajustar la entrada de `PDB_VENTAS` en `tnsnames.ora`
 
 Realiza este paso **solo si al conectarte** así:
 
@@ -160,9 +158,6 @@ PDB_VENTAS =
 ```sql
 CONNECT sys/oracle_4U@PDB_VENTAS AS SYSDBA;
 
--- Alternativa:
-ALTER SESSION SET CONTAINER = PDB_VENTAS;
-
 -- Debe mostrar PDB_VENTAS
 SHOW CON_NAME;  
 
@@ -177,8 +172,6 @@ GRANT CREATE SESSION, CREATE TABLE TO USER_VENTAS;
 #### **Paso 4.** Crear tabla local de prueba    
 
 ```sql
-CONNECT USER_VENTAS/Oracle123@PDB_VENTAS;
-
 SHOW CON_NAME
 
 SHOW USER
