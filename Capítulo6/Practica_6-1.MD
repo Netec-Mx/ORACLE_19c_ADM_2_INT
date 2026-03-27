@@ -75,6 +75,7 @@ SHOW CON_NAME;
 ```sql
 -- Verifica que el mecanismo de FLASHBACK este habilitado
 SELECT flashback_on FROM v$database;
+-- Resultado esperado: YES
 
 -- Si esta habilitado configura el tiempo de retención
 ALTER SYSTEM SET DB_FLASHBACK_RETENTION_TARGET=60 SCOPE=BOTH;
@@ -120,16 +121,6 @@ SHOW PDBS;
 #### **Paso 6.** En el laboratorio 5 se creo la BD PDB_HR, registrar la PDB_HR en el archivo *tnsnames.ora*
 
 Edita el archivo **tnsnames.ora** y agrega (o verifica) la entrada correspondiente a **PDB_HR**, asegurándote de usar el *SERVICE_NAME* correcto. Luego guarda los cambios y valida la conexión con SQL*Plus.
-
-
-<br/>
-
-#### **Paso 7.** Verificar que Flashback está habilitado
-
-```sql
-SELECT FLASHBACK_ON FROM V$DATABASE;
--- Resultado esperado: YES
-```
 
 <br/><br/>
 
